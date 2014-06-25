@@ -10,7 +10,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Vibrator;
+import android.widget.Toast;
 
 import com.ivangrgurevic.fling.assets.SpriteAssets;
 import com.ivangrgurevic.fling.framework.Game;
@@ -64,6 +66,8 @@ public class GameScreen extends Screen {
 	private int BLUE = Color.rgb(0, 175, 255);
 	private SpriteAssets spriteAssets;
 	
+	private boolean backPressedOnce; // should be moved to another class
+	
 	public GameScreen(Game game, SpriteAssets spriteAssets) {
 		super(game);
 		this.spriteAssets = spriteAssets;
@@ -74,7 +78,7 @@ public class GameScreen extends Screen {
 		vibrator = (Vibrator)ctx.getSystemService(Context.VIBRATOR_SERVICE);
 		
 		// level
-		level = 0;
+		level = 10;
 		LEVEL_X = g.getWidth()/2;
 		LEVEL_Y = g.getHeight()/4;
 		
@@ -306,11 +310,6 @@ public class GameScreen extends Screen {
 						resume();
 					}
 				}
-
-				if (inBounds(event, 0, 240, 800, 240)) {
-					nullify();
-					goToMenu();
-				}
 			}
 		}
 	}
@@ -320,11 +319,7 @@ public class GameScreen extends Screen {
 		for (int i=0;i<len;i++) {
 			TouchEvent event = touchEvents.get(i);
 			if (event.type == TouchEvent.TOUCH_UP) {
-				if (inBounds(event, 0, 0, 800, 480)) {
-					nullify();
-					goToMenu();
-					return;
-				}
+				newGame();
 			}
 		}
 
@@ -523,8 +518,8 @@ public class GameScreen extends Screen {
 		paint2 = null;
 		paint = null;
 		
-		//DO NOT NULLIFY 'spriteAssets'! THROWS A NULL EXCEPTION. Why? you ask. I have no damn idea.
-		//spriteAssets = null; 
+		// DO NOT NULLIFY 'spriteAssets'
+		// spriteAssets = null; 
 
 		// Call garbage collector to clean up memory.
 		System.gc();
@@ -544,16 +539,23 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void dispose() {
-
+		nullify();		
 	}
 
 	@Override
 	public void backButton() {
-		pause();
-	}
+		if (state == GameState.Paused || state == GameState.GameOver) {
+			//nullify(); // causes game to crash
+			android.os.Process.killProcess(android.os.Process.myPid());
+		}
+		
+		pause();   
 
-	private void goToMenu() {
-		game.setScreen(new MainMenuScreen(game, spriteAssets));
+        Toast.makeText((AndroidGame)game, R.string.press_back, Toast.LENGTH_SHORT).show(); // might want to remove this...
+	}
+	
+	private void newGame() {
+		game.setScreen(new GameScreen(game, spriteAssets));
 	}
 	
 	private void browserTwitterIntent() {
