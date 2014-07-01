@@ -29,10 +29,10 @@ import com.ivangrgurevic.game.R;
 
 public class GameScreen extends Screen {
 	private enum GameState {
-		Running, Paused, GameOver
+		PLAYING, PAUSED, OVER
 	}
 
-	GameState state = GameState.Running;
+	GameState state = GameState.PLAYING;
 	
 	private PlayerSprite playerSprite;
 	private boolean playerSpriteSelected = false;
@@ -155,47 +155,56 @@ public class GameScreen extends Screen {
 	public void update(float deltaTime) {
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
-		if (state == GameState.Running)
-			updateRunning(touchEvents, deltaTime);
-		if (state == GameState.Paused)
+		if (state == GameState.PLAYING)
+			updatePlaying(touchEvents, deltaTime);
+		if (state == GameState.PAUSED)
 			updatePaused(touchEvents);
-		if (state == GameState.GameOver)
+		if (state == GameState.OVER)
 			updateGameOver(touchEvents);
 	}
 	
-	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
-		updateRunningTouchEvents(touchEvents);
+	private void updatePlaying(List<TouchEvent> touchEvents, float deltaTime) {
+		updatePlayingTouchEvents(touchEvents);
 
-		updateRunningSprites(deltaTime);
+		updatePlayingSprites(deltaTime);
 		
-		updateRunningSpriteArrays();
+		updatePlayingSpriteArrays();
 		
 		if (livesLeft <= 0)
-			state = GameState.GameOver;
+			state = GameState.OVER;
 		
 		checkLevel();
 	}
 	
-	private void updateRunningSpriteArrays() {
+	private void updatePlayingSpriteArrays() {
 		// minus
 		for(int i=0;i<minusSpriteArr.size();i++) {
 			MinusSprite sprite = minusSpriteArr.get(i);
 			
-			double deltaX = sprite.getX() - playerSprite.getX();
-			double deltaY = sprite.getY() - playerSprite.getY();
+			double playerDeltaX = sprite.getX() - playerSprite.getX();
+			double playerDeltaY = sprite.getY() - playerSprite.getY();
+			double stationDeltaX = sprite.getX() - playerSprite.getStartX();
+			double stationDeltaY = sprite.getY() - playerSprite.getStartY();
 			
-			double rad = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
+			double playerRad = Math.sqrt((playerDeltaX*playerDeltaX)+(playerDeltaY*playerDeltaY));
+			double stationRad = Math.sqrt((stationDeltaX*stationDeltaX)+(stationDeltaY*stationDeltaY));
 			
-			if(rad < (sprite.getRadius()+playerSprite.getRadius()) && playerSprite.isTouched() && !playerSprite.isSpawning()) {
+			if(stationRad < (sprite.getRadius()+playerSprite.getOuterRadius())) {
+				minusSpriteArr.remove(i);
+				i--;
+				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX()*-1, sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
+				removeLife();
+			}
+			else if(playerRad < (sprite.getRadius()+playerSprite.getRadius()) && playerSprite.isTouched() && !playerSprite.isSpawning()) {
 				minusSpriteArr.remove(i);
 				i--;
 				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));
 			}
-			else if((sprite.getY()+sprite.getRadius()) > g.getHeight()) {
+			else if((sprite.getY()-sprite.getRadius()) > g.getHeight()) {
 				minusSpriteArr.remove(i);
 				i--;
-				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
-				removeLife();
+				//dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
+				//removeLife();
 			}
 		}
 		
@@ -203,16 +212,25 @@ public class GameScreen extends Screen {
 		for(int i=0;i<plusSpriteArr.size();i++) {
 			PlusSprite sprite = plusSpriteArr.get(i);
 			
-			double deltaX = sprite.getX() - playerSprite.getX();
-			double deltaY = sprite.getY() - playerSprite.getY();
+			double playerDeltaX = sprite.getX() - playerSprite.getX();
+			double playerDeltaY = sprite.getY() - playerSprite.getY();
+			double stationDeltaX = sprite.getX() - playerSprite.getStartX();
+			double stationDeltaY = sprite.getY() - playerSprite.getStartY();
 			
-			double rad = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
+			double playerRad = Math.sqrt((playerDeltaX*playerDeltaX)+(playerDeltaY*playerDeltaY));
+			double stationRad = Math.sqrt((stationDeltaX*stationDeltaX)+(stationDeltaY*stationDeltaY));
 			
-			if(rad < (sprite.getRadius()+playerSprite.getRadius()) && playerSprite.isTouched() && !playerSprite.isSpawning()) {
+			if(stationRad < (sprite.getRadius()+playerSprite.getOuterRadius())) {
 				plusSpriteArr.remove(i);
 				i--;
 				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));
 				addLife();
+			}
+			else if(playerRad < (sprite.getRadius()+playerSprite.getRadius()) && playerSprite.isTouched() && !playerSprite.isSpawning()) {
+				plusSpriteArr.remove(i);
+				i--;
+				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));
+				//addLife();
 			}
 			else if((sprite.getY()-sprite.getRadius()) > g.getHeight()) {
 				plusSpriteArr.remove(i);
@@ -252,7 +270,7 @@ public class GameScreen extends Screen {
 		}
 	}
 	
-	private void updateRunningTouchEvents(List<TouchEvent> touchEvents) {
+	private void updatePlayingTouchEvents(List<TouchEvent> touchEvents) {
 		int len = touchEvents.size();
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
@@ -284,7 +302,7 @@ public class GameScreen extends Screen {
 		}
 	}
 	
-	private void updateRunningSprites(float deltaTime) {
+	private void updatePlayingSprites(float deltaTime) {
 		playerSprite.move(deltaTime);
 		
 		for(MinusSprite sprite : minusSpriteArr)
@@ -378,31 +396,22 @@ public class GameScreen extends Screen {
 		playerSprite = new PlayerSprite(0, 0, spriteAssets, g);
 		
 		// minus sprite
-		for(int i=0;i<minusSpriteArr.size();i++) {
-			MinusSprite sprite = minusSpriteArr.get(i);
-			
-			minusSpriteArr.remove(i);
-			i--;
+		for(MinusSprite sprite : minusSpriteArr) {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
 		}
+		minusSpriteArr.clear();
 		
 		// plus sprite
-		for(int i=0;i<plusSpriteArr.size();i++) {
-			PlusSprite sprite = plusSpriteArr.get(i);
-
-			plusSpriteArr.remove(i);
-			i--;
-			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), 0, 0, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
+		for(PlusSprite sprite : plusSpriteArr) {
+			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
 		}
+		plusSpriteArr.clear();
 		
 		// cross sprite
-		for(int i=0;i<crossSpriteArr.size();i++) {
-			CrossSprite sprite = crossSpriteArr.get(i);
-			
-			crossSpriteArr.remove(i);
-			i--;
-			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), 0, 0, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));
+		for(CrossSprite sprite : crossSpriteArr) {
+			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
 		}
+		crossSpriteArr.clear();
 
 		dispersionArr.add(new DispersionEffect(0, 0, 0, 0, g.getWidth(), g.getHeight(), Color.rgb(153,153,153), 1000, spriteAssets, g));
 	}
@@ -452,15 +461,20 @@ public class GameScreen extends Screen {
 		g.drawString(String.valueOf(level), LEVEL_X, LEVEL_Y, paintLevel);
 		
 		
-		if (state == GameState.Running)
-			drawRunningUI(deltaTime);
-		if (state == GameState.Paused)
+		if (state == GameState.PLAYING) {
+			drawPlayingUI(deltaTime);
+		}
+		else if (state == GameState.PAUSED) {
+			drawPlayingUI(deltaTime);
 			drawPausedUI();
-		if (state == GameState.GameOver)
-			drawGameOverUI();
+		}
+		else if (state == GameState.OVER) {
+			drawPlayingUI(deltaTime);
+			drawGameOverUI();			
+		}
 	}
 
-	private void drawRunningUI(float deltaTime) {
+	private void drawPlayingUI(float deltaTime) {
 		// lives
 		for(int i=0;i<MAX_LIVES;i++) {
 			g.drawCircle(LIVES_DISTANCE*(i+1), LIVES_Y, LIVES_HOLLOW_RADIUS, paintLivesHollow);
@@ -491,12 +505,13 @@ public class GameScreen extends Screen {
 
 	private void drawPausedUI() {
 		// Darken the entire screen so you can display the Paused screen.
-		g.drawARGB(155, 0, 0, 0);
+		g.drawARGB(200, 0, 0, 0);
 		g.drawString("Resume", 400, 165, paint2);
 		g.drawString("Menu", 400, 360, paint2);
 	}
 
 	private void drawGameOverUI() {
+		g.drawARGB(200, 0, 0, 0);
 		g.drawString("GAME OVER.", 400, 240, paint2);
 		g.drawString("Tap to return.", 400, 290, paint);
 	}
@@ -527,14 +542,14 @@ public class GameScreen extends Screen {
 	
 	@Override
 	public void pause() {
-		if (state == GameState.Running)
-			state = GameState.Paused;
+		if (state == GameState.PLAYING)
+			state = GameState.PAUSED;
 	}
 
 	@Override
 	public void resume() {
-		if (state == GameState.Paused)
-			state = GameState.Running;
+		if (state == GameState.PAUSED)
+			state = GameState.PLAYING;
 	}
 
 	@Override
@@ -544,7 +559,7 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void backButton() {
-		if (state == GameState.Paused || state == GameState.GameOver) {
+		if (state == GameState.PAUSED || state == GameState.OVER) {
 			//nullify(); // causes game to crash
 			android.os.Process.killProcess(android.os.Process.myPid());
 		}

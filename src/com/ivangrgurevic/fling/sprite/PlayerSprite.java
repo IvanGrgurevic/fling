@@ -203,4 +203,8 @@ public class PlayerSprite extends Sprite {
 	public int getBounces() {
 		return bounces;
 	}
+	
+	public float getOuterRadius() {
+		return arrowRadius;
+	}
 }

@@ -63,6 +63,16 @@ public class DispersionEffect extends Sprite {
 	
 	@Override
 	public void draw() {
+		GRAPHICS.drawPoints(points, paint);				
+	}
+	
+	@Override
+	public void move() {
+		for(int i=0;i<numPoints/2;i++) {
+			points[2*i] += pointsVelocity[2*i] + vx + (float)(Math.random()*2-1);
+			points[2*i+1] += pointsVelocity[2*i+1] + vy + (float)(Math.random()*2-1);
+		}
+		
 		if(!isDone) {
 			alpha -= ALPHA_DECREMENT;
 			
@@ -72,18 +82,8 @@ public class DispersionEffect extends Sprite {
 			}
 			else {
 				paint.setAlpha(alpha);
-				
-				GRAPHICS.drawPoints(points, paint);				
 			}
 		}
-	}
-	
-	@Override
-	public void move() {
-		for(int i=0;i<numPoints/2;i++) {
-			points[2*i] += pointsVelocity[2*i] + vx + (float)(Math.random()*2-1);
-			points[2*i+1] += pointsVelocity[2*i+1] + vy + (float)(Math.random()*2-1);
-		}			
 	}
 	
 	public boolean isDone() {
