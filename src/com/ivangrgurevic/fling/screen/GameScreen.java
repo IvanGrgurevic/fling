@@ -56,6 +56,8 @@ public class GameScreen extends Screen {
 	private final float LIVES_HOLLOW_RADIUS;
 	private final int LIVES_STROKE_WIDTH;
 	private final int LEVEL_AND_LIVES_COLOR;
+	private final double SPRITE_CREATION_RATIO = 0.8;
+
 	
 	private Paint paintLevel, paintBorder, paintLives, paintLivesHollow;
 	private Paint paint2, paint; // find better names and should be fucking changed
@@ -332,19 +334,17 @@ public class GameScreen extends Screen {
 			}
 		}
 	}
-	
+		
 	private void createSprites() {
 		// speed
 		double vx = Math.random()*spriteSpeed - (spriteSpeed/2);
 		double vy = Math.random()*spriteSpeed + spriteSpeed;
 		
 		if(level > 1) {
-			double random = Math.random();
-			
-			if(random > 0.05 && random < 0.9) { // minus sprite
+			if(Math.random() < SPRITE_CREATION_RATIO) { 
 				minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, g));
 			}
-			else { // plus sprite
+			else {
 				plusSpriteArr.add(new PlusSprite(vx, vy, spriteAssets, g));
 			}
 		}
