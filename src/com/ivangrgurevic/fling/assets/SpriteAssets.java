@@ -20,7 +20,6 @@ public class SpriteAssets {
 	// small sprite
 	private Image minusSpriteImage;
 	private Image plusSpriteImage;
-	private Image crossSpriteImage;
 	private float smallSpriteRadius;
 	private float smallSpriteStrokeWidth;
 	private double smallSpriteSpeed;
@@ -112,32 +111,6 @@ public class SpriteAssets {
 		
 		plusSpriteImage = g.newImage(bitmap); // END plus Sprite
 		
-		// cross Sprite
-		armLength = (float) (smallSpriteRadius*0.4);
-		negativeArm = spriteBitmapCenter-armLength;
-		positiveArm = spriteBitmapCenter+armLength;
-
-		bitmap = Bitmap.createBitmap(spriteBitmapSize, spriteBitmapSize, Config.ARGB_4444);
-		canvas = new Canvas(bitmap);
-		
-		paint = new Paint();
-		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setColor(Color.rgb(175,0,0));
-		paint.setStrokeWidth(smallSpriteStrokeWidth);
-		paint.setStrokeCap(Paint.Cap.ROUND);
-		
-		canvas.drawCircle(spriteBitmapCenter, spriteBitmapCenter, smallSpriteRadius, paint);
-		path = new Path();
-		path.setLastPoint(negativeArm, negativeArm); // top-left point
-		path.lineTo(positiveArm, positiveArm); // bottom-right point
-		path.moveTo(negativeArm, positiveArm); // bottom-left point
-		path.lineTo(positiveArm, negativeArm); // top-right point
-		
-		canvas.drawPath(path, paint);
-		
-		crossSpriteImage = g.newImage(bitmap);
-
 		// player station
 		spriteBitmapSize = (int) (stationRadius*2 + stationStrokeWidth)+antiAlias*2;
 		spriteBitmapCenter = spriteBitmapSize/2;
@@ -194,14 +167,8 @@ public class SpriteAssets {
 		return minusSpriteImage;
 	}
 
-
 	public Image getPlusSpriteImage() {
 		return plusSpriteImage;
-	}
-
-
-	public Image getCrossSpriteImage() {
-		return crossSpriteImage;
 	}
 
 	public Image getStationImage() {

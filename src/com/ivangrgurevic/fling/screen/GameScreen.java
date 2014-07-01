@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.Vibrator;
 import android.widget.Toast;
 
@@ -20,7 +19,6 @@ import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
 import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
-import com.ivangrgurevic.fling.sprite.CrossSprite;
 import com.ivangrgurevic.fling.sprite.DispersionEffect;
 import com.ivangrgurevic.fling.sprite.MinusSprite;
 import com.ivangrgurevic.fling.sprite.PlayerSprite;
@@ -38,7 +36,6 @@ public class GameScreen extends Screen {
 	private boolean playerSpriteSelected = false;
 	private ArrayList<MinusSprite> minusSpriteArr;
 	private ArrayList<PlusSprite> plusSpriteArr;
-	private ArrayList<CrossSprite> crossSpriteArr;
 	private ArrayList<DispersionEffect> dispersionArr;
 	private Vibrator vibrator;
 	private final int MAX_NODE_NUM = 50;
@@ -90,7 +87,6 @@ public class GameScreen extends Screen {
 		// sprites
 		minusSpriteArr = new ArrayList<MinusSprite>();
 		plusSpriteArr = new ArrayList<PlusSprite>();
-		crossSpriteArr = new ArrayList<CrossSprite>();
 				
 		spriteNum = 0;
 		spriteSpeed = this.spriteAssets.getSmallSpriteSpeed();
@@ -238,27 +234,6 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		// cross
-		for(int i=0;i<crossSpriteArr.size();i++) {
-			CrossSprite sprite = crossSpriteArr.get(i);
-			
-			double deltaX = sprite.getX() - playerSprite.getX();
-			double deltaY = sprite.getY() - playerSprite.getY();
-			
-			double rad = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
-			
-			if(rad < (sprite.getRadius()+playerSprite.getRadius()) && playerSprite.isTouched() && !playerSprite.isSpawning()) {
-				crossSpriteArr.remove(i);
-				i--;
-				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));
-				removeLife();
-			}
-			else if(((sprite.getX()-sprite.getRadius()) > g.getWidth() && sprite.getVX() > 0) || ((sprite.getX()+sprite.getRadius()) < 0 && sprite.getVX() < 0)) {
-				crossSpriteArr.remove(i);
-				i--;
-			}
-		}
-
 		// dispersion
 		for(int i=0;i<dispersionArr.size();i++) {
 			DispersionEffect effect = dispersionArr.get(i);
@@ -309,9 +284,6 @@ public class GameScreen extends Screen {
 			sprite.move(deltaTime);
 
 		for(PlusSprite sprite : plusSpriteArr)
-			sprite.move(deltaTime);
-
-		for(CrossSprite sprite : crossSpriteArr)
 			sprite.move(deltaTime);
 
 		for(DispersionEffect sprite : dispersionArr)
@@ -372,11 +344,8 @@ public class GameScreen extends Screen {
 			if(random > 0.05 && random < 0.9) { // minus sprite
 				minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, g));
 			}
-			else if(random <= 0.05 ) { // plus sprite
+			else { // plus sprite
 				plusSpriteArr.add(new PlusSprite(vx, vy, spriteAssets, g));
-			}
-			else { // cross sprite
-				crossSpriteArr.add(new CrossSprite(vx, spriteAssets, g));
 			}
 		}
 		else {
@@ -407,12 +376,6 @@ public class GameScreen extends Screen {
 		}
 		plusSpriteArr.clear();
 		
-		// cross sprite
-		for(CrossSprite sprite : crossSpriteArr) {
-			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, g));				
-		}
-		crossSpriteArr.clear();
-
 		dispersionArr.add(new DispersionEffect(0, 0, 0, 0, g.getWidth(), g.getHeight(), Color.rgb(153,153,153), 1000, spriteAssets, g));
 	}
 	
@@ -493,10 +456,6 @@ public class GameScreen extends Screen {
 		for(PlusSprite sprite : plusSpriteArr)
 			sprite.draw(deltaTime);
 		
-		// cross sprite
-		for(CrossSprite sprite : crossSpriteArr)
-			sprite.draw(deltaTime);
-
 		// dispersion effect
 		for(DispersionEffect effect : dispersionArr) {
 			effect.draw();
@@ -521,7 +480,6 @@ public class GameScreen extends Screen {
 		playerSpriteSelected = false;
 		minusSpriteArr = null;
 		plusSpriteArr = null;
-		crossSpriteArr = null;
 		dispersionArr = null;
 		vibrator = null;
 		spriteNum = 0;
