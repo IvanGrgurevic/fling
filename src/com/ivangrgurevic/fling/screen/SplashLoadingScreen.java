@@ -1,6 +1,5 @@
 package com.ivangrgurevic.fling.screen;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.ivangrgurevic.fling.assets.SpriteAssets;
@@ -8,6 +7,8 @@ import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
+import com.ivangrgurevic.fling.screen.layer.BackgroundLayer;
+import com.ivangrgurevic.fling.util.GameTheme;
 import com.ivangrgurevic.game.R;
 
 public class SplashLoadingScreen extends Screen {
@@ -15,14 +16,12 @@ public class SplashLoadingScreen extends Screen {
 	private int alpha = 255;
 	private int x;
 	private int y;
-	private Paint paintSplash, paintBorder;
-
-	private final float BORDER_STROKE_WIDTH;
-
-	private int YELLOW = Color.rgb(255, 175, 0);
+	private Paint paintSplash;
 
 	private boolean loaded;
 	private SpriteAssets spriteAssets;
+	
+	private BackgroundLayer backgroundLayer;
 	
 	private final String AUTHOR;
 
@@ -33,6 +32,8 @@ public class SplashLoadingScreen extends Screen {
 		
 		Graphics g = game.getGraphics();
 		
+		backgroundLayer = new BackgroundLayer(this, g);
+		
 		// splash
 		x = g.getWidth() / 2;
 		y = g.getHeight() / 2;
@@ -41,16 +42,8 @@ public class SplashLoadingScreen extends Screen {
 		paintSplash.setTextSize(32);
 		paintSplash.setTextAlign(Paint.Align.CENTER);
 		paintSplash.setAntiAlias(true);
-		paintSplash.setColor(YELLOW);
+		paintSplash.setColor(GameTheme.YELLOW);
 		
-		// border
-		BORDER_STROKE_WIDTH = (float) ((g.getWidth()*0.005 < 2) ? 2 : g.getWidth()*0.005);
-
-		paintBorder = new Paint();
-		paintBorder.setColor(YELLOW);
-		paintBorder.setStyle(Paint.Style.STROKE);
-		paintBorder.setStrokeWidth(BORDER_STROKE_WIDTH);
-
 		loaded = false;
 	}
 
@@ -71,11 +64,7 @@ public class SplashLoadingScreen extends Screen {
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
 		
-		g.drawColor(Color.BLACK);
-
-		//border
-		g.drawLine(0, 0, 0, g.getHeight(), paintBorder);
-		g.drawLine(g.getWidth(), 0, g.getWidth(), g.getHeight(), paintBorder);
+		backgroundLayer.draw(deltaTime);
 		
 		alpha -= 2;
 		

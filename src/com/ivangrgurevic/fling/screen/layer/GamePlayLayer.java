@@ -36,7 +36,7 @@ public class GamePlayLayer extends Layer {
 	private double spriteSpeed;
 
 	
-	private int level = 0;	
+	private int level = 10;	
 	private final int LEVEL_X;
 	private final int LEVEL_Y;
 	private final float LEVEL_TEXT_SIZE;
@@ -58,7 +58,6 @@ public class GamePlayLayer extends Layer {
 		super(screen, graphics);
 		
 		this.spriteAssets = spriteAssets;
-		
 		
 		Context ctx = (AndroidGame)screen.getGame();
 		vibrator = (Vibrator)ctx.getSystemService(Context.VIBRATOR_SERVICE);
@@ -111,7 +110,6 @@ public class GamePlayLayer extends Layer {
 		paintLivesHollow.setStyle(Paint.Style.STROKE);
 		paintLivesHollow.setColor(LEVEL_AND_LIVES_COLOR);
 		paintLivesHollow.setStrokeWidth(LIVES_STROKE_WIDTH);
-		
 	}
 
 	@Override
@@ -142,17 +140,14 @@ public class GamePlayLayer extends Layer {
 		for(DispersionEffect effect : dispersionArr) {
 			effect.draw(deltaTime);
 		}
-
 	}
 
 	@Override
 	public void update(List<TouchEvent> touchEvents, float deltaTime) {
 		updateTouchEvents(touchEvents);
-
 		updateSprites(deltaTime);
-		
 		updateSpriteArrays();
-				
+		
 		checkLevel();
 	}
 
@@ -352,5 +347,21 @@ public class GamePlayLayer extends Layer {
 	
 	public int getLevel() {
 		return level;
+	}
+	
+	public PlayerSprite getPlayerSprite() {
+		return playerSprite;
+	}
+
+	public ArrayList<MinusSprite> getMinusSprites() {
+		return minusSpriteArr;
+	}
+	
+	public ArrayList<PlusSprite> getPlusSprites() {
+		return plusSpriteArr;
+	}
+	
+	public ArrayList<DispersionEffect> getDispersionEffects() {
+		return dispersionArr;
 	}
 }

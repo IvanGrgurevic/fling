@@ -46,7 +46,7 @@ public class GameScreen extends Screen {
 		gamePlayLayer = new GamePlayLayer(this, graphics, spriteAssets);
 		pausedLayer = new PausedLayer(this, graphics);
 		menuBarLayer = new MenuBarLayer(this, graphics);
-		gameOverLayer = new GameOverLayer(this, graphics);
+		gameOverLayer = null;
 	}
 
 	//=============================================================== UPDATE
@@ -66,6 +66,10 @@ public class GameScreen extends Screen {
 			menuBarLayer.update(touchEvents, deltaTime);
 		}
 		else if (state == GameState.OVER) {
+			if(gameOverLayer == null) {
+				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getPlusSprites(), gamePlayLayer.getDispersionEffects());
+			}
+			
 			gameOverLayer.update(touchEvents, deltaTime);
 			menuBarLayer.update(touchEvents, deltaTime);
 		}
@@ -85,20 +89,32 @@ public class GameScreen extends Screen {
 			menuBarLayer.draw(deltaTime);
 		}
 		else if (state == GameState.OVER) {
+			if(gameOverLayer == null) {
+				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getPlusSprites(), gamePlayLayer.getDispersionEffects());
+			}
+			
 			backgroundLayer.draw(deltaTime);
-			gamePlayLayer.draw(deltaTime);
+			//gamePlayLayer.draw(deltaTime);
 			gameOverLayer.draw(deltaTime);
-			menuBarLayer.draw(deltaTime);
+			//menuBarLayer.draw(deltaTime);
 		}
 	}
 
 	//=============================================================== OTHER
 	private void nullify() {
-		graphics = null;
-		
 		// DO NOT NULLIFY 'spriteAssets'
 		// spriteAssets = null; 
 
+		state = null;
+
+		graphics = null;
+		
+		backgroundLayer = null;
+		//menuBarLayer = null;
+		gamePlayLayer = null;
+		pausedLayer = null;
+		gameOverLayer = null;
+		
 		// Call garbage collector to clean up memory.
 		System.gc();
 	}

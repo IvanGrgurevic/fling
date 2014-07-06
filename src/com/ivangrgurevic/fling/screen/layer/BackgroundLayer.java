@@ -8,10 +8,10 @@ import android.graphics.Paint;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
 import com.ivangrgurevic.fling.framework.Screen;
+import com.ivangrgurevic.fling.util.GameTheme;
 
 public class BackgroundLayer extends Layer {
 	private final float BORDER_STROKE_WIDTH;
-	private final int YELLOW = Color.rgb(255, 175, 0);
 
 	private Paint paintBorder;
 
@@ -21,7 +21,7 @@ public class BackgroundLayer extends Layer {
 		BORDER_STROKE_WIDTH = (float) ((graphics.getWidth()*0.005 < 2) ? 2 : graphics.getWidth()*0.005); // because less than 2 pixels don't display nicely
 		
 		paintBorder = new Paint();
-		paintBorder.setColor(YELLOW);
+		paintBorder.setColor(GameTheme.YELLOW);
 		paintBorder.setStyle(Paint.Style.STROKE);
 		paintBorder.setStrokeWidth(BORDER_STROKE_WIDTH);
 	}
@@ -36,7 +36,7 @@ public class BackgroundLayer extends Layer {
 
 	@Override
 	public void update(List<TouchEvent> touchEvents, float deltaTime) {
-		
+		// Maybe add some cool background effect...
 	}
 
 }
