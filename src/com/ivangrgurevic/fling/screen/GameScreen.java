@@ -30,7 +30,7 @@ public class GameScreen extends Screen {
 		PLAYING, PAUSED, OVER
 	}
 
-	GameState state = GameState.PLAYING;
+	private GameState state = GameState.PLAYING;
 	
 	private PlayerSprite playerSprite;
 	private boolean playerSpriteSelected = false;
@@ -42,7 +42,7 @@ public class GameScreen extends Screen {
 	private final double NODE_SPEED_INCREMENT;
 	private int spriteNum;
 	private double spriteSpeed;
-	private int level;	
+	private int level = 0;	
 	private final int LEVEL_X;
 	private final int LEVEL_Y;
 	private final float LEVEL_TEXT_SIZE;
@@ -55,6 +55,11 @@ public class GameScreen extends Screen {
 	private final float LIVES_RADIUS;
 	private final float LIVES_HOLLOW_RADIUS;
 	private final int LIVES_STROKE_WIDTH;
+	
+	private final float LIFE_START_RADIUS;
+	private final float LIFE_STROKE_WIDTH;
+	private final float LIFE_SPACE;
+
 	private final int LEVEL_AND_LIVES_COLOR;
 	private final double SPRITE_CREATION_RATIO = 0.8;
 
@@ -77,7 +82,6 @@ public class GameScreen extends Screen {
 		vibrator = (Vibrator)ctx.getSystemService(Context.VIBRATOR_SERVICE);
 		
 		// level
-		level = 10;
 		LEVEL_X = g.getWidth()/2;
 		LEVEL_Y = g.getHeight()/4;
 		
@@ -100,8 +104,11 @@ public class GameScreen extends Screen {
 		// constants for lives
 		LIVES_DISTANCE = g.getWidth()/(MAX_LIVES+1);
 		LIVES_Y = g.getHeight()/3;
-		LIVES_RADIUS = (float) (g.getWidth()*0.02);
-		LIVES_HOLLOW_RADIUS = (float) (g.getWidth()*0.025);
+		LIVES_RADIUS = (float) (g.getWidth()*0.025);
+		LIVES_HOLLOW_RADIUS = (float) (g.getWidth()*0.03);
+		LIFE_START_RADIUS = this.spriteAssets.getLifeStartRadius();
+		LIFE_STROKE_WIDTH = this.spriteAssets.getLifeStrokeWidth();
+		LIFE_SPACE = this.spriteAssets.getLifeSpace();
 		
 		// constants for paint objects
 		LEVEL_AND_LIVES_COLOR = Color.rgb(60,60,60);
@@ -122,13 +129,13 @@ public class GameScreen extends Screen {
 		paintLives.setFlags(Paint.ANTI_ALIAS_FLAG);
 		paintLives.setStyle(Paint.Style.FILL);
 		paintLives.setColor(LEVEL_AND_LIVES_COLOR);
-		
+		paintLives.setStrokeWidth(LIFE_STROKE_WIDTH);
+
 		paintLivesHollow = new Paint();
 		paintLivesHollow.setFlags(Paint.ANTI_ALIAS_FLAG);
 		paintLivesHollow.setStyle(Paint.Style.STROKE);
 		paintLivesHollow.setColor(LEVEL_AND_LIVES_COLOR);
 		paintLivesHollow.setStrokeWidth(LIVES_STROKE_WIDTH);
-		paintLivesHollow.setTextAlign(Paint.Align.CENTER);
 		
 		paintBorder = new Paint();
 		paintBorder.setColor(YELLOW);
@@ -355,11 +362,7 @@ public class GameScreen extends Screen {
 
 	private void changeLevel() {
 		level++;
-		
-		// add life
-		for(int i=0;i<plusSpriteArr.size();i++)
-			addLife();
-		
+				
 		// player sprite
 		dispersionArr.add(new DispersionEffect(playerSprite.getX(), playerSprite.getY(), 0, 0, playerSprite.getRadius(), Color.WHITE, 80, spriteAssets, g));				
 		playerSprite = new PlayerSprite(0, 0, spriteAssets, g);
@@ -387,6 +390,7 @@ public class GameScreen extends Screen {
 	private void addLife() {
 		if(livesLeft < MAX_LIVES) {
 			livesLeft++;
+			vibrator.vibrate(50);
 			// maybe add the line below
 			//dispersionArr.add(new DispersionEffect(LIVES_DISTANCE*livesLeft, LIVES_Y, 0, 0, LIVES_RADIUS, LEVEL_AND_LIVES_COLOR, 500, spriteAssets, g));
 		}
@@ -441,10 +445,11 @@ public class GameScreen extends Screen {
 		// lives
 		for(int i=0;i<MAX_LIVES;i++) {
 			g.drawCircle(LIVES_DISTANCE*(i+1), LIVES_Y, LIVES_HOLLOW_RADIUS, paintLivesHollow);
-			if(i < livesLeft)
+			if(i < livesLeft) {
 				g.drawCircle(LIVES_DISTANCE*(i+1), LIVES_Y, LIVES_RADIUS, paintLives);
+			}
 		}
-		
+				
 		// player
 		playerSprite.draw(deltaTime);
 		
@@ -462,6 +467,7 @@ public class GameScreen extends Screen {
 		}
 	}
 
+	// ===============================================================================================
 	private void drawPausedUI() {
 		// Darken the entire screen so you can display the Paused screen.
 		g.drawARGB(200, 0, 0, 0);
@@ -474,6 +480,7 @@ public class GameScreen extends Screen {
 		g.drawString("GAME OVER.", 400, 240, paint2);
 		g.drawString("Tap to return.", 400, 290, paint);
 	}
+	// ===============================================================================================
 
 	private void nullify() {
 		playerSprite = null;

@@ -16,6 +16,7 @@ public class PlayerSprite extends Sprite {
 	private float stationY;
 	private boolean spawning = true; 
 	private int spawningRadius = 0;
+	private int SPAWNING_RATE = 5;
 	private int bounces = 0;
 	private final int BOUNCE_MAX = 1;
 	private Paint paint;
@@ -32,7 +33,7 @@ public class PlayerSprite extends Sprite {
 	private Image stationImage;
 	private float arrowRadius;
 	private float pullRadius;
-
+	private float stationRaduis;
 	
 	public PlayerSprite(double vx, double vy, SpriteAssets spriteAssets, Graphics graphics) {
 		super(vx, vy, spriteAssets, graphics);
@@ -41,7 +42,8 @@ public class PlayerSprite extends Sprite {
 		y = spriteAssets.getBigSpriteY();
 		
 		radius = this.spriteAssets.getBigSpriteRadius();
-		arrowRadius = this.spriteAssets.getStationRadius() - this.spriteAssets.getStationStrokeWidth();
+		stationRaduis = this.spriteAssets.getStationRadius();
+		arrowRadius = this.spriteAssets.getStationRadius() - this.spriteAssets.getStationStrokeWidth() -1;
 		
 		pullRadius = arrowRadius - radius;
 		
@@ -53,7 +55,7 @@ public class PlayerSprite extends Sprite {
 		paint.setStyle(Paint.Style.STROKE);
 		paint.setStrokeJoin(Paint.Join.ROUND);
 		paint.setStrokeCap(Paint.Cap.ROUND);
-		
+
 		stationImage = this.spriteAssets.getStationImage();
 		stationX = startX - stationImage.getWidth()/2;
 		stationY = startY - stationImage.getHeight()/2;
@@ -108,7 +110,7 @@ public class PlayerSprite extends Sprite {
 	@Override
 	public void move(float deltaTime) {
 		if(spawning) {
-			spawningRadius += 3;
+			spawningRadius += SPAWNING_RATE;
 			
 			if(spawningRadius >= radius) {
 				spawningRadius = 0;
@@ -205,6 +207,6 @@ public class PlayerSprite extends Sprite {
 	}
 	
 	public float getOuterRadius() {
-		return arrowRadius;
+		return stationRaduis;
 	}
 }
