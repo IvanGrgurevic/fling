@@ -65,7 +65,7 @@ public class GameOverLayer extends Layer {
 		else {
 			for(int i=0;i<dispersionArr.size();i++) {
 				DispersionEffect effect = dispersionArr.get(i);
-				effect.update(deltaTime);
+				//effect.update(deltaTime);
 				
 				if(effect.isDone()) {
 					dispersionArr.remove(i);

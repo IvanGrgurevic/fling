@@ -23,13 +23,11 @@ public class DispersionEffect extends Sprite {
 		pointsVelocity = new float[numPoints];
 		
 		double t;
-		double u;
 		double r;
 		
 		for(int i=0;i<numPoints/2;i++) {
 			t = 2 * Math.PI * Math.random();
-			u = Math.random() * 2;
-			r = (u > 1) ? (2 - u) : u;
+			r = Math.random() * 2 - 1;
 						
 			points[2*i] = (float)(x + (r * Math.cos(t) * radius));
 			points[2*i+1] = (float)(y + (r * Math.sin(t) * radius));
@@ -67,7 +65,6 @@ public class DispersionEffect extends Sprite {
 		paint.setStrokeWidth(spriteAssets.getDispersionStrokeWidth());
 		paint.setColor(color);
 	}
-
 	
 	@Override
 	public void draw(float deltaTime) {
