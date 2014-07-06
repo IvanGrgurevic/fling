@@ -32,10 +32,7 @@ public class SpriteAssets {
 	// dispersion effect
 	private int dispersionStrokeWidth;
 	private final double DISPERSION_STROKE_WIDTH_PERCENTILE = 0.002;
-	// lives
-	private float lifeStartRadius;
-	private float lifeStrokeWidth;
-	private float lifeSpace;
+
 	
 	public SpriteAssets(Graphics g) {
 		maxVelocity = (int) (g.getHeight() * 0.13);
@@ -138,11 +135,6 @@ public class SpriteAssets {
 		
 		// play station arrow arm length
 		arrowArmLength = (float) (bigSpriteRadius*0.3);
-		
-		// life
-		lifeSpace = g.getWidthPercentile(0.015);
-		lifeStrokeWidth = g.getWidthPercentile(0.005);
-		lifeStartRadius = stationRadius - lifeSpace;
 	}
 
 	// big Sprite
@@ -208,15 +200,4 @@ public class SpriteAssets {
 		return dispersionStrokeWidth;
 	}
 
-	public float getLifeStartRadius() {
-		return lifeStartRadius;
-	}
-
-	public float getLifeStrokeWidth() {
-		return lifeStrokeWidth;
-	}
-
-	public float getLifeSpace() {
-		return lifeSpace;
-	}
 }

@@ -62,12 +62,12 @@ public class DispersionEffect extends Sprite {
 
 	
 	@Override
-	public void draw() {
+	public void draw(float deltaTime) {
 		GRAPHICS.drawPoints(points, paint);				
 	}
 	
 	@Override
-	public void move() {
+	public void update(float deltaTime) {
 		for(int i=0;i<numPoints/2;i++) {
 			points[2*i] += pointsVelocity[2*i] + vx + (float)(Math.random()*2-1);
 			points[2*i+1] += pointsVelocity[2*i+1] + vy + (float)(Math.random()*2-1);

@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Vibrator;
+import android.view.View;
 import android.widget.Toast;
 
 import com.ivangrgurevic.fling.assets.SpriteAssets;
@@ -23,6 +24,10 @@ import com.ivangrgurevic.fling.sprite.DispersionEffect;
 import com.ivangrgurevic.fling.sprite.MinusSprite;
 import com.ivangrgurevic.fling.sprite.PlayerSprite;
 import com.ivangrgurevic.fling.sprite.PlusSprite;
+import com.ivangrgurevic.fling.util.Range;
+import com.ivangrgurevic.fling.view.GameOverView;
+import com.ivangrgurevic.fling.view.MenuBarView;
+import com.ivangrgurevic.fling.view.PausedView;
 import com.ivangrgurevic.game.R;
 
 public class GameScreen extends Screen {
@@ -31,6 +36,10 @@ public class GameScreen extends Screen {
 	}
 
 	private GameState state = GameState.PLAYING;
+	
+	private MenuBarView menuBarView;
+	private PausedView pausedView;
+	private GameOverView gameOverView;
 	
 	private PlayerSprite playerSprite;
 	private boolean playerSpriteSelected = false;
@@ -56,30 +65,28 @@ public class GameScreen extends Screen {
 	private final float LIVES_HOLLOW_RADIUS;
 	private final int LIVES_STROKE_WIDTH;
 	
-	private final float LIFE_START_RADIUS;
-	private final float LIFE_STROKE_WIDTH;
-	private final float LIFE_SPACE;
-
 	private final int LEVEL_AND_LIVES_COLOR;
 	private final double SPRITE_CREATION_RATIO = 0.8;
 
-	
+	private final int YELLOW = Color.rgb(255, 175, 0);
+
 	private Paint paintLevel, paintBorder, paintLives, paintLivesHollow;
-	private Paint paint2, paint; // find better names and should be fucking changed
-	private int YELLOW = Color.rgb(255, 175, 0);
-	private int BLUE = Color.rgb(0, 175, 255);
 	private SpriteAssets spriteAssets;
-	
-	private boolean backPressedOnce; // should be moved to another class
-	
+		
 	public GameScreen(Game game, SpriteAssets spriteAssets) {
 		super(game);
+		
 		this.spriteAssets = spriteAssets;
 		
 		g = game.getGraphics();
 		
 		Context ctx = (AndroidGame)game;
 		vibrator = (Vibrator)ctx.getSystemService(Context.VIBRATOR_SERVICE);
+		
+		// views
+		pausedView = new PausedView(this, g);
+		menuBarView = new MenuBarView(this, g);
+		gameOverView = new GameOverView(this, g);
 		
 		// level
 		LEVEL_X = g.getWidth()/2;
@@ -106,9 +113,6 @@ public class GameScreen extends Screen {
 		LIVES_Y = g.getHeight()/3;
 		LIVES_RADIUS = (float) (g.getWidth()*0.025);
 		LIVES_HOLLOW_RADIUS = (float) (g.getWidth()*0.03);
-		LIFE_START_RADIUS = this.spriteAssets.getLifeStartRadius();
-		LIFE_STROKE_WIDTH = this.spriteAssets.getLifeStrokeWidth();
-		LIFE_SPACE = this.spriteAssets.getLifeSpace();
 		
 		// constants for paint objects
 		LEVEL_AND_LIVES_COLOR = Color.rgb(60,60,60);
@@ -129,7 +133,7 @@ public class GameScreen extends Screen {
 		paintLives.setFlags(Paint.ANTI_ALIAS_FLAG);
 		paintLives.setStyle(Paint.Style.FILL);
 		paintLives.setColor(LEVEL_AND_LIVES_COLOR);
-		paintLives.setStrokeWidth(LIFE_STROKE_WIDTH);
+		paintLives.setStrokeWidth(LIVES_STROKE_WIDTH);
 
 		paintLivesHollow = new Paint();
 		paintLivesHollow.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -141,19 +145,6 @@ public class GameScreen extends Screen {
 		paintBorder.setColor(YELLOW);
 		paintBorder.setStyle(Paint.Style.STROKE);
 		paintBorder.setStrokeWidth(BORDER_STROKE_WIDTH);
-
-		// TO CHANGE
-		paint = new Paint();
-		paint.setTextSize(30);
-		paint.setTextAlign(Paint.Align.CENTER);
-		paint.setAntiAlias(true);
-		paint.setColor(Color.WHITE);
-		
-		paint2 = new Paint();
-		paint2.setTextSize(100);
-		paint2.setTextAlign(Paint.Align.CENTER);
-		paint2.setAntiAlias(true);
-		paint2.setColor(Color.WHITE);
 	}
 
 	@Override
@@ -162,10 +153,10 @@ public class GameScreen extends Screen {
 
 		if (state == GameState.PLAYING)
 			updatePlaying(touchEvents, deltaTime);
-		if (state == GameState.PAUSED)
-			updatePaused(touchEvents);
-		if (state == GameState.OVER)
-			updateGameOver(touchEvents);
+		else if (state == GameState.PAUSED)
+			updatePaused(touchEvents, deltaTime);
+		else if (state == GameState.OVER)
+			updateGameOver(touchEvents, deltaTime);
 	}
 	
 	private void updatePlaying(List<TouchEvent> touchEvents, float deltaTime) {
@@ -259,7 +250,7 @@ public class GameScreen extends Screen {
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 			if (event.type == TouchEvent.TOUCH_DOWN) {
-				if (!playerSprite.isTouched() && inBounds(event, playerSprite.getX(), playerSprite.getY(), playerSprite.getRadius()+playerSprite.VELOCITY_MAX)) {
+				if (!playerSprite.isTouched() && Range.inBounds(event, playerSprite.getX(), playerSprite.getY(), playerSprite.getRadius()+playerSprite.VELOCITY_MAX)) {
 					playerSprite.setXY(event.x, event.y);
 					playerSpriteSelected = true;
 				}
@@ -287,33 +278,27 @@ public class GameScreen extends Screen {
 	}
 	
 	private void updatePlayingSprites(float deltaTime) {
-		playerSprite.move(deltaTime);
+		playerSprite.update(deltaTime);
 		
 		for(MinusSprite sprite : minusSpriteArr)
-			sprite.move(deltaTime);
+			sprite.update(deltaTime);
 
 		for(PlusSprite sprite : plusSpriteArr)
-			sprite.move(deltaTime);
+			sprite.update(deltaTime);
 
 		for(DispersionEffect sprite : dispersionArr)
-			sprite.move();
+			sprite.update(deltaTime);
 	}
 
-	private void updatePaused(List<TouchEvent> touchEvents) {
-		int len = touchEvents.size();
-		for (int i=0;i<len;i++) {
-			TouchEvent event = touchEvents.get(i);
-			if (event.type == TouchEvent.TOUCH_UP) {
-				if (inBounds(event, 0, 0, 800, 240)) {
-					if (!inBounds(event, 0, 0, 35, 35)) {
-						resume();
-					}
-				}
-			}
-		}
+	private void updatePaused(List<TouchEvent> touchEvents, float deltaTime) {
+		pausedView.update(touchEvents, deltaTime);
+		menuBarView.update(touchEvents, deltaTime);
 	}
 
-	private void updateGameOver(List<TouchEvent> touchEvents) {
+	private void updateGameOver(List<TouchEvent> touchEvents, float deltaTime) {
+		gameOverView.update(touchEvents, deltaTime);
+		menuBarView.update(touchEvents, deltaTime);
+		////
 		int len = touchEvents.size();
 		for (int i=0;i<len;i++) {
 			TouchEvent event = touchEvents.get(i);
@@ -396,25 +381,6 @@ public class GameScreen extends Screen {
 		}
 	}
 
-	private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
-		if (event.x > x && event.x < x + width - 1 && event.y > y && event.y < y + height - 1)
-			return true;
-		else
-			return false;
-	}
-
-	private boolean inBounds(TouchEvent event, float x, float y, float radius) {
-		double deltaX = event.x - x;
-		double deltaY = event.y - y;
-		
-		double rad = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
-		
-		if (rad < radius)
-			return true;
-		else
-			return false;
-	}
-	
 	//=====================================================================================================================Paint
 	@Override
 	public void paint(float deltaTime) {
@@ -433,11 +399,11 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.PAUSED) {
 			drawPlayingUI(deltaTime);
-			drawPausedUI();
+			drawPausedUI(deltaTime);
 		}
 		else if (state == GameState.OVER) {
 			drawPlayingUI(deltaTime);
-			drawGameOverUI();			
+			drawGameOverUI(deltaTime);			
 		}
 	}
 
@@ -463,22 +429,20 @@ public class GameScreen extends Screen {
 		
 		// dispersion effect
 		for(DispersionEffect effect : dispersionArr) {
-			effect.draw();
+			effect.draw(deltaTime);
 		}
 	}
 
 	// ===============================================================================================
-	private void drawPausedUI() {
+	private void drawPausedUI(float deltaTime) {
 		// Darken the entire screen so you can display the Paused screen.
-		g.drawARGB(200, 0, 0, 0);
-		g.drawString("Resume", 400, 165, paint2);
-		g.drawString("Menu", 400, 360, paint2);
+		pausedView.draw(deltaTime);
+		menuBarView.draw(deltaTime);
 	}
 
-	private void drawGameOverUI() {
-		g.drawARGB(200, 0, 0, 0);
-		g.drawString("GAME OVER.", 400, 240, paint2);
-		g.drawString("Tap to return.", 400, 290, paint);
+	private void drawGameOverUI(float deltaTime) {
+		gameOverView.draw(deltaTime);
+		menuBarView.draw(deltaTime);
 	}
 	// ===============================================================================================
 
@@ -495,8 +459,6 @@ public class GameScreen extends Screen {
 		livesLeft = 0;
 		paintLevel = null;
 		paintBorder = null;
-		paint2 = null;
-		paint = null;
 		
 		// DO NOT NULLIFY 'spriteAssets'
 		// spriteAssets = null; 
@@ -507,14 +469,16 @@ public class GameScreen extends Screen {
 	
 	@Override
 	public void pause() {
-		if (state == GameState.PLAYING)
+		if (state == GameState.PLAYING) {
 			state = GameState.PAUSED;
+		}
 	}
 
 	@Override
 	public void resume() {
-		if (state == GameState.PAUSED)
+		if (state == GameState.PAUSED) {
 			state = GameState.PLAYING;
+		}
 	}
 
 	@Override
@@ -523,7 +487,7 @@ public class GameScreen extends Screen {
 	}
 
 	@Override
-	public void backButton() {
+	public void backButton() { // figure out what to do about this...
 		if (state == GameState.PAUSED || state == GameState.OVER) {
 			//nullify(); // causes game to crash
 			android.os.Process.killProcess(android.os.Process.myPid());
@@ -538,9 +502,9 @@ public class GameScreen extends Screen {
 		game.setScreen(new GameScreen(game, spriteAssets));
 	}
 	
-	private void browserTwitterIntent() {
-		Resources res = ((AndroidGame)game).getResources();
+	private void browserTwitterIntent() { // should be moved to another class // maybe it should stay here
+		Resources res = ((AndroidGame) game).getResources();
 		String url = String.format(res.getString(R.string.twitter_intent_url), level);
-		((AndroidGame)game).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));	
+		((AndroidGame) game).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));	
 	}
 }

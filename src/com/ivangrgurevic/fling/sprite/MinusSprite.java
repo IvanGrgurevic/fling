@@ -35,7 +35,7 @@ public class MinusSprite extends Sprite {
 	}
 	
 	@Override
-	public void move(float deltaTime) {
+	public void update(float deltaTime) {
 		x += vx*deltaTime;
 		y += vy*deltaTime;
 		

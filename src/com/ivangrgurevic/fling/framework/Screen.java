@@ -18,4 +18,8 @@ public abstract class Screen {
     public abstract void dispose();
     
     public abstract void backButton();
+    
+    public Game getGame() {
+    	return game;
+    }
 }

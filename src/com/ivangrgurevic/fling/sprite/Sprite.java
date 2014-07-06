@@ -29,11 +29,8 @@ public abstract class Sprite {
 		VELOCITY_MAX = this.spriteAssets.getMaxVelocity();
 	}
 
-	public void draw() {};
-	public void draw(float deltaTime) {};
-
-	public void move() {};
-	public void move(float deltaTime) {};
+	public abstract void draw(float deltaTime);
+	public abstract void update(float deltaTime);
 
 	public float getX() {
 		return x;

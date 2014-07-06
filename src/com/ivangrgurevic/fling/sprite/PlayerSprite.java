@@ -108,7 +108,7 @@ public class PlayerSprite extends Sprite {
 	}
 	
 	@Override
-	public void move(float deltaTime) {
+	public void update(float deltaTime) {
 		if(spawning) {
 			spawningRadius += SPAWNING_RATE;
 			
