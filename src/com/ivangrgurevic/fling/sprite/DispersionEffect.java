@@ -22,9 +22,17 @@ public class DispersionEffect extends Sprite {
 		points = new float[numPoints];
 		pointsVelocity = new float[numPoints];
 		
+		double t;
+		double u;
+		double r;
+		
 		for(int i=0;i<numPoints/2;i++) {
-			points[2*i] = (float)(x+(Math.random()*(radius*2)-radius));
-			points[2*i+1] = (float)(y+(Math.random()*(radius*2)-radius));
+			t = 2 * Math.PI * Math.random();
+			u = Math.random() * 2;
+			r = (u > 1) ? (2 - u) : u;
+						
+			points[2*i] = (float)(x + (r * Math.cos(t) * radius));
+			points[2*i+1] = (float)(y + (r * Math.sin(t) * radius));
 			
 			pointsVelocity[2*i] = (float)(Math.random()*2-1);
 			pointsVelocity[2*i+1] = (float)(Math.random()*2-1);
