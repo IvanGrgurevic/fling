@@ -1,4 +1,4 @@
-package com.ivangrgurevic.fling.view;
+package com.ivangrgurevic.fling.screen.layer;
 
 import java.util.List;
 
@@ -10,12 +10,12 @@ import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
 import com.ivangrgurevic.fling.framework.Screen;
 
-public class PausedView extends View {
+public class PausedLayer extends Layer {
 
 	private Paint paint;
 	
-	public PausedView(Screen screen, Graphics g) {
-		super(screen, g);
+	public PausedLayer(Screen screen, Graphics graphics) {
+		super(screen, graphics);
 
 		paint = new Paint();
 		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -26,7 +26,7 @@ public class PausedView extends View {
 
 	@Override
 	public void draw(float deltaTime) {
-		g.drawRect(new RectF(0, 0, g.getWidth(), g.getHeight()), paint);
+		graphics.drawRect(new RectF(0, 0, graphics.getWidth(), graphics.getHeight()), paint);
 	}
 
 	@Override
