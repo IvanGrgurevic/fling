@@ -1,11 +1,11 @@
 package com.ivangrgurevic.fling.sprite;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.ivangrgurevic.fling.assets.SpriteAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Image;
+import com.ivangrgurevic.fling.util.GameTheme;
 
 public class MinusSprite extends Sprite {
 	private Image spriteImage;
@@ -20,7 +20,7 @@ public class MinusSprite extends Sprite {
 		spriteImageCenter = spriteImage.getWidth()/2;
 
 		radius = spriteAssets.getSmallSpriteRadius();
-		color = Color.rgb(255,175,0);
+		color = GameTheme.YELLOW;
 		
 		x = (float)(Math.random()*(GRAPHICS.getWidth()-radius)+radius*2);
 		y = -radius;

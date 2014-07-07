@@ -27,7 +27,7 @@ public class DispersionEffect extends Sprite {
 		
 		for(int i=0;i<numPoints/2;i++) {
 			t = 2 * Math.PI * Math.random();
-			r = Math.random() * 2 - 1;
+			r = Math.sqrt(Math.random());
 						
 			points[2*i] = (float)(x + (r * Math.cos(t) * radius));
 			points[2*i+1] = (float)(y + (r * Math.sin(t) * radius));

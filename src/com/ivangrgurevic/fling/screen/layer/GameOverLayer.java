@@ -18,19 +18,21 @@ import com.ivangrgurevic.fling.util.GameTheme;
 
 public class GameOverLayer extends Layer {
 	private ArrayList<DispersionEffect> dispersionArr;
-	private SpriteAssets spriteAssets;
 	
 	public GameOverLayer(Screen screen, Graphics g, SpriteAssets spriteAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<PlusSprite> plusSprites, ArrayList<DispersionEffect> dispersionEffects) {
 		super(screen, g);
 
-		this.spriteAssets = spriteAssets;
 		dispersionArr = new ArrayList<DispersionEffect>();
 		
 		// convert all sprites to dispersion effects
+		for(DispersionEffect effect : dispersionEffects) {
+			dispersionArr.add(effect);
+		}
+
 		dispersionArr.add(new DispersionEffect(playerSprite.getX(), playerSprite.getY(), 0, 0, playerSprite.getRadius(), Color.WHITE, 80, spriteAssets, graphics));				
 		
 		dispersionArr.add(new DispersionEffect(playerSprite.getStartX(), playerSprite.getStartY(), 0, 0, playerSprite.getOuterRadius(), GameTheme.BLUE, 500, spriteAssets, graphics));				
-		
+				
 		for(MinusSprite sprite : minusSprites) {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
 		}
@@ -38,11 +40,6 @@ public class GameOverLayer extends Layer {
 		for(PlusSprite sprite : plusSprites) {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
 		}
-
-		for(DispersionEffect effect : dispersionEffects) {
-			dispersionArr.add(effect);
-		}
-
 	}
 	
 	@Override
@@ -65,7 +62,7 @@ public class GameOverLayer extends Layer {
 		else {
 			for(int i=0;i<dispersionArr.size();i++) {
 				DispersionEffect effect = dispersionArr.get(i);
-				//effect.update(deltaTime);
+				effect.update(deltaTime);
 				
 				if(effect.isDone()) {
 					dispersionArr.remove(i);
