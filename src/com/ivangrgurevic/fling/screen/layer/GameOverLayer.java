@@ -19,7 +19,7 @@ import com.ivangrgurevic.fling.util.GameTheme;
 public class GameOverLayer extends Layer {
 	private ArrayList<DispersionEffect> dispersionArr;
 	
-	public GameOverLayer(Screen screen, Graphics g, SpriteAssets spriteAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<PlusSprite> plusSprites, ArrayList<DispersionEffect> dispersionEffects) {
+	public GameOverLayer(Screen screen, Graphics g, SpriteAssets spriteAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<DispersionEffect> dispersionEffects) {
 		super(screen, g);
 
 		dispersionArr = new ArrayList<DispersionEffect>();
@@ -37,9 +37,9 @@ public class GameOverLayer extends Layer {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
 		}
 
-		for(PlusSprite sprite : plusSprites) {
+		/*for(PlusSprite sprite : plusSprites) {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
-		}
+		}*/
 	}
 	
 	@Override

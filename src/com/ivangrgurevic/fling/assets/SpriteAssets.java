@@ -65,10 +65,9 @@ public class SpriteAssets {
 		
 		int spriteBitmapSize = (int) (smallSpriteRadius*2 + smallSpriteStrokeWidth)+antiAlias*2;
 		int spriteBitmapCenter = spriteBitmapSize/2;
-		float armLength = (float) (smallSpriteRadius*0.5);
+		float armLength = (float) (smallSpriteRadius*0.4);
 		float negativeArm = spriteBitmapCenter-armLength;
 		float positiveArm = spriteBitmapCenter+armLength;
-		float armCenter = spriteBitmapCenter;
 		
 		// minus Sprite
 		bitmap = Bitmap.createBitmap(spriteBitmapSize, spriteBitmapSize, Config.ARGB_4444);
@@ -84,14 +83,16 @@ public class SpriteAssets {
 		canvas.drawCircle(spriteBitmapCenter, spriteBitmapCenter, smallSpriteRadius, paint);
 		
 		path = new Path();
-		path.setLastPoint(negativeArm, armCenter); // left point
-		path.lineTo(positiveArm, armCenter); // right point
+		path.setLastPoint(negativeArm, negativeArm); // top-left point
+		path.lineTo(positiveArm, positiveArm); // bottom-right point
+		path.moveTo(negativeArm, positiveArm); // bottom-left point
+		path.lineTo(positiveArm, negativeArm); // top-right point
 		canvas.drawPath(path, paint);
 		
 		minusSpriteImage = g.newImage(bitmap); // END minus Sprite
 		
 		// plus Sprite
-		bitmap = Bitmap.createBitmap(spriteBitmapSize, spriteBitmapSize, Config.ARGB_4444);
+		/*bitmap = Bitmap.createBitmap(spriteBitmapSize, spriteBitmapSize, Config.ARGB_4444);
 		canvas = new Canvas(bitmap);
 		
 		paint = new Paint();
@@ -111,6 +112,7 @@ public class SpriteAssets {
 		canvas.drawPath(path, paint);
 		
 		plusSpriteImage = g.newImage(bitmap); // END plus Sprite
+		*/
 		
 		// player station
 		spriteBitmapSize = (int) (stationRadius*2 + stationStrokeWidth)+antiAlias*2;

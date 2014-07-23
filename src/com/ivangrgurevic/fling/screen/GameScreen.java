@@ -67,7 +67,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getPlusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), /*gamePlayLayer.getPlusSprites(),*/ gamePlayLayer.getDispersionEffects());
 			}
 			
 			gameOverLayer.update(touchEvents, deltaTime);
@@ -90,7 +90,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getPlusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), /*gamePlayLayer.getPlusSprites(),*/ gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.draw(deltaTime);

@@ -27,7 +27,7 @@ public class GamePlayLayer extends Layer {
 	private PlayerSprite playerSprite;
 	private boolean playerSpriteSelected = false;
 	private ArrayList<MinusSprite> minusSpriteArr;
-	private ArrayList<PlusSprite> plusSpriteArr;
+	//private ArrayList<PlusSprite> plusSpriteArr;
 	private ArrayList<DispersionEffect> dispersionArr;
 	private Vibrator vibrator;
 	private final int MAX_NODE_NUM = 50;
@@ -36,12 +36,12 @@ public class GamePlayLayer extends Layer {
 	private double spriteSpeed;
 
 	
-	private int level = 10;	
+	private int level = 0;	
 	private final int LEVEL_X;
 	private final int LEVEL_Y;
 	private final float LEVEL_TEXT_SIZE;
-	private int livesLeft = 3;
-	private final int MAX_LIVES = 3;
+	private int livesLeft = 1;
+	private final int MAX_LIVES = 1;
 	private final float LIVES_DISTANCE;
 	private final float LIVES_Y;
 	private final float LIVES_RADIUS;
@@ -49,7 +49,7 @@ public class GamePlayLayer extends Layer {
 	private final int LIVES_STROKE_WIDTH;
 	
 	private final int LEVEL_AND_LIVES_COLOR;
-	private final double SPRITE_CREATION_RATIO = 0.8;
+	private final double SPRITE_CREATION_PROBABILITY = 0.8;
 
 	private Paint paintLevel, paintLives, paintLivesHollow;
 
@@ -66,7 +66,7 @@ public class GamePlayLayer extends Layer {
 
 		// sprite
 		minusSpriteArr = new ArrayList<MinusSprite>();
-		plusSpriteArr = new ArrayList<PlusSprite>();
+		//plusSpriteArr = new ArrayList<PlusSprite>();
 				
 		spriteNum = 0;
 		spriteSpeed = this.spriteAssets.getSmallSpriteSpeed();
@@ -133,8 +133,8 @@ public class GamePlayLayer extends Layer {
 			sprite.draw(deltaTime);
 
 		// plus sprite
-		for(PlusSprite sprite : plusSpriteArr)
-			sprite.draw(deltaTime);
+		//for(PlusSprite sprite : plusSpriteArr)
+			//sprite.draw(deltaTime);
 		
 		// dispersion effect
 		for(DispersionEffect effect : dispersionArr) {
@@ -184,7 +184,7 @@ public class GamePlayLayer extends Layer {
 		}
 		
 		// plus
-		for(int i=0;i<plusSpriteArr.size();i++) {
+		/*for(int i=0;i<plusSpriteArr.size();i++) {
 			PlusSprite sprite = plusSpriteArr.get(i);
 			
 			double playerDeltaX = sprite.getX() - playerSprite.getX();
@@ -211,7 +211,7 @@ public class GamePlayLayer extends Layer {
 				plusSpriteArr.remove(i);
 				i--;
 			}
-		}
+		}*/
 
 		// dispersion
 		for(int i=0;i<dispersionArr.size();i++) {
@@ -262,15 +262,15 @@ public class GamePlayLayer extends Layer {
 		for(MinusSprite sprite : minusSpriteArr)
 			sprite.update(deltaTime);
 
-		for(PlusSprite sprite : plusSpriteArr)
-			sprite.update(deltaTime);
+		//for(PlusSprite sprite : plusSpriteArr)
+			//sprite.update(deltaTime);
 
 		for(DispersionEffect sprite : dispersionArr)
 			sprite.update(deltaTime);
 	}
 
 	private void checkLevel() {
-		if(minusSpriteArr.size() == 0 && plusSpriteArr.size() == 0) {
+		if(minusSpriteArr.size() == 0 /*&& plusSpriteArr.size() == 0*/) {
 			changeLevel();
 			
 			if(level > MAX_NODE_NUM) {
@@ -293,12 +293,13 @@ public class GamePlayLayer extends Layer {
 		double vy = Math.random()*spriteSpeed + spriteSpeed;
 		
 		if(level > 1) {
-			if(Math.random() < SPRITE_CREATION_RATIO) { 
+			/*if(Math.random() < SPRITE_CREATION_RATIO) { 
 				minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, graphics));
 			}
 			else {
 				plusSpriteArr.add(new PlusSprite(vx, vy, spriteAssets, graphics));
-			}
+			}*/
+			minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, graphics));	
 		}
 		else {
 			minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, graphics));
@@ -319,10 +320,10 @@ public class GamePlayLayer extends Layer {
 		minusSpriteArr.clear();
 		
 		// plus sprite
-		for(PlusSprite sprite : plusSpriteArr) {
+		/*for(PlusSprite sprite : plusSpriteArr) {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));				
 		}
-		plusSpriteArr.clear();
+		plusSpriteArr.clear();*/
 				
 		dispersionArr.add(new DispersionEffect(0, 0, 0, 0, graphics.getWidth(), graphics.getHeight(), Color.rgb(153,153,153), 1000, spriteAssets, graphics));
 	}
@@ -357,9 +358,9 @@ public class GamePlayLayer extends Layer {
 		return minusSpriteArr;
 	}
 	
-	public ArrayList<PlusSprite> getPlusSprites() {
+	/*public ArrayList<PlusSprite> getPlusSprites() {
 		return plusSpriteArr;
-	}
+	}*/
 	
 	public ArrayList<DispersionEffect> getDispersionEffects() {
 		return dispersionArr;
