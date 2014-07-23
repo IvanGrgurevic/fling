@@ -172,14 +172,8 @@ public class PlayerSprite extends Sprite {
 		double dY = startY - y;
 		double r = Math.sqrt((dX*dX)+(dY*dY));
 		
-		if(r > pullRadius) {
-			this.x = (int) ((dX/r)*(-pullRadius) + startX);
-			this.y = (int) ((dY/r)*(-pullRadius) + startY);
-		}
-		else {
-			this.x = x;
-			this.y = y;
-		}
+		this.x = (int) ((dX/r)*(-pullRadius) + startX);
+		this.y = (int) ((dY/r)*(-pullRadius) + startY);
 	}
 	
 	public float getStartX() {

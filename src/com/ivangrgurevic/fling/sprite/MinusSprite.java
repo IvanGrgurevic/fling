@@ -12,7 +12,7 @@ public class MinusSprite extends Sprite {
 	private float spriteImageCenter;
 	private int color;
 	private Paint paint;
-	
+
 	public MinusSprite(double vx, double vy, SpriteAssets spriteAssets, Graphics graphics) {
 		super(vx, vy, spriteAssets, graphics);
 		

@@ -13,7 +13,6 @@ import com.ivangrgurevic.fling.screen.GameScreen;
 import com.ivangrgurevic.fling.sprite.DispersionEffect;
 import com.ivangrgurevic.fling.sprite.MinusSprite;
 import com.ivangrgurevic.fling.sprite.PlayerSprite;
-import com.ivangrgurevic.fling.sprite.PlusSprite;
 import com.ivangrgurevic.fling.util.GameTheme;
 
 public class GameOverLayer extends Layer {
@@ -36,10 +35,6 @@ public class GameOverLayer extends Layer {
 		for(MinusSprite sprite : minusSprites) {
 			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
 		}
-
-		/*for(PlusSprite sprite : plusSprites) {
-			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
-		}*/
 	}
 	
 	@Override

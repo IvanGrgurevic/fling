@@ -2,9 +2,11 @@ package com.ivangrgurevic.fling.screen;
 
 import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Vibrator;
 import android.widget.Toast;
 
 import com.ivangrgurevic.fling.assets.SpriteAssets;
@@ -27,6 +29,8 @@ public class GameScreen extends Screen {
 
 	private GameState state = GameState.PLAYING;
 
+	private Vibrator vibrator;
+
 	private SpriteAssets spriteAssets;
 	private Graphics graphics;
 	
@@ -41,7 +45,9 @@ public class GameScreen extends Screen {
 		
         graphics = this.game.getGraphics();
 		this.spriteAssets = spriteAssets;
-				
+		
+		vibrator = (Vibrator)((Context)game).getSystemService(Context.VIBRATOR_SERVICE);
+		
 		backgroundLayer = new BackgroundLayer(this, graphics);
 		gamePlayLayer = new GamePlayLayer(this, graphics, spriteAssets);
 		pausedLayer = new PausedLayer(this, graphics);
@@ -57,8 +63,9 @@ public class GameScreen extends Screen {
 		if (state == GameState.PLAYING) {
 			gamePlayLayer.update(touchEvents, deltaTime);
 			
-			if (gamePlayLayer.getLives() <= 0) {
+			if (gamePlayLayer.isGameOver()) {
 				state = GameState.OVER;
+				vibrator.vibrate(50);
 			}
 		}
 		else if (state == GameState.PAUSED) {
@@ -67,7 +74,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), /*gamePlayLayer.getPlusSprites(),*/ gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			gameOverLayer.update(touchEvents, deltaTime);
@@ -90,7 +97,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), /*gamePlayLayer.getPlusSprites(),*/ gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.draw(deltaTime);
@@ -156,7 +163,7 @@ public class GameScreen extends Screen {
 	
 	private void browserTwitterIntent() { // should be moved to another class // maybe it should stay here
 		Resources res = ((AndroidGame) game).getResources();
-		String url = String.format(res.getString(R.string.twitter_intent_url), gamePlayLayer.getLevel());
+		String url = String.format(res.getString(R.string.twitter_intent_url), gamePlayLayer.getPoints());
 		((AndroidGame) game).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));	
 	}
 }
