@@ -2,7 +2,7 @@ package com.ivangrgurevic.fling.sprite;
 
 import android.graphics.Paint;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Image;
 import com.ivangrgurevic.fling.util.GameTheme;
@@ -13,7 +13,7 @@ public class MinusSprite extends Sprite {
 	private int color;
 	private Paint paint;
 
-	public MinusSprite(double vx, double vy, SpriteAssets spriteAssets, Graphics graphics) {
+	public MinusSprite(double vx, double vy, GameAssets spriteAssets, Graphics graphics) {
 		super(vx, vy, spriteAssets, graphics);
 		
 		spriteImage = spriteAssets.getMinusSpriteImage();
@@ -36,8 +36,8 @@ public class MinusSprite extends Sprite {
 	
 	@Override
 	public void update(float deltaTime) {
-		x += vx*deltaTime;
-		y += vy*deltaTime;
+		x += vx * deltaTime;
+		y += vy * deltaTime;
 		
 		if((x+radius) > GRAPHICS.getWidth()) {
 			x = GRAPHICS.getWidth() - radius;

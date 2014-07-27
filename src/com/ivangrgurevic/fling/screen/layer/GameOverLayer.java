@@ -5,7 +5,7 @@ import java.util.List;
 
 import android.graphics.Color;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
 import com.ivangrgurevic.fling.framework.Screen;
@@ -18,7 +18,7 @@ import com.ivangrgurevic.fling.util.GameTheme;
 public class GameOverLayer extends Layer {
 	private ArrayList<DispersionEffect> dispersionArr;
 	
-	public GameOverLayer(Screen screen, Graphics g, SpriteAssets spriteAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<DispersionEffect> dispersionEffects) {
+	public GameOverLayer(Screen screen, Graphics g, GameAssets gameAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<DispersionEffect> dispersionEffects) {
 		super(screen, g);
 
 		dispersionArr = new ArrayList<DispersionEffect>();
@@ -28,12 +28,17 @@ public class GameOverLayer extends Layer {
 			dispersionArr.add(effect);
 		}
 
-		dispersionArr.add(new DispersionEffect(playerSprite.getX(), playerSprite.getY(), 0, 0, playerSprite.getRadius(), Color.WHITE, 80, spriteAssets, graphics));				
+		//border
+		dispersionArr.add(new DispersionEffect(0, 0, 0, 0, graphics.getWidth(), graphics.getHeight(), Color.WHITE, 2000, gameAssets, graphics));				
+
 		
-		dispersionArr.add(new DispersionEffect(playerSprite.getStartX(), playerSprite.getStartY(), 0, 0, playerSprite.getOuterRadius(), GameTheme.BLUE, 500, spriteAssets, graphics));				
-				
+		// player
+		dispersionArr.add(new DispersionEffect(playerSprite.getX(), playerSprite.getY(), 0, 0, playerSprite.getRadius(), Color.WHITE, 80, gameAssets, graphics));				
+		dispersionArr.add(new DispersionEffect(playerSprite.getStartX(), playerSprite.getStartY(), 0, 0, playerSprite.getOuterRadius(), GameTheme.BLUE, 500, gameAssets, graphics));				
+		
+		// minus sprite
 		for(MinusSprite sprite : minusSprites) {
-			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));
+			dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX(), sprite.getVY(), sprite.getRadius(), sprite.getColor(), 80, gameAssets, graphics));
 		}
 	}
 	

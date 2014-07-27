@@ -2,7 +2,7 @@ package com.ivangrgurevic.fling.sprite;
 
 import android.graphics.Paint;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 
 public class DispersionEffect extends Sprite {
@@ -14,7 +14,7 @@ public class DispersionEffect extends Sprite {
 	private int alpha = 255;
 	private final int ALPHA_DECREMENT = 2;
 	
-	public DispersionEffect(float x, float y, double vx, double vy, float radius, int color, int numPoints, SpriteAssets spriteAssets, Graphics graphics) {
+	public DispersionEffect(float x, float y, double vx, double vy, float radius, int color, int numPoints, GameAssets spriteAssets, Graphics graphics) {
 		super(vx, vy, spriteAssets, graphics);
 		
 		this.numPoints = numPoints;
@@ -43,7 +43,7 @@ public class DispersionEffect extends Sprite {
 		paint.setColor(color);
 	}
 
-	public DispersionEffect(float x, float y, double vx, double vy, float width, float height, int color, int numPoints, SpriteAssets spriteAssets, Graphics graphics) {
+	public DispersionEffect(float x, float y, double vx, double vy, float width, float height, int color, int numPoints, GameAssets spriteAssets, Graphics graphics) {
 		super(vx, vy, spriteAssets, graphics);
 		
 		this.numPoints = numPoints;

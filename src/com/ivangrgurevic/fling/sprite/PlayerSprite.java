@@ -4,9 +4,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Image;
+import com.ivangrgurevic.fling.util.GameTheme;
 
 public class PlayerSprite extends Sprite {
 	private boolean isTouched = false;
@@ -19,7 +20,7 @@ public class PlayerSprite extends Sprite {
 	private int SPAWNING_RATE = 5;
 	private int bounces = 0;
 	private final int BOUNCE_MAX = 1;
-	private Paint paint;
+	private Paint paintStation, paintPlayer;
 	private Path arrow;
 	private double deltaX;
 	private double deltaY;
@@ -33,16 +34,17 @@ public class PlayerSprite extends Sprite {
 	private Image stationImage;
 	private float arrowRadius;
 	private float pullRadius;
-	private float stationRaduis;
+	private float stationRadius;
+	private int hitCount;
 	
-	public PlayerSprite(double vx, double vy, SpriteAssets spriteAssets, Graphics graphics) {
+	public PlayerSprite(double vx, double vy, GameAssets spriteAssets, Graphics graphics) {
 		super(vx, vy, spriteAssets, graphics);
 
 		x = spriteAssets.getBigSpriteX();
 		y = spriteAssets.getBigSpriteY();
 		
 		radius = this.spriteAssets.getBigSpriteRadius();
-		stationRaduis = this.spriteAssets.getStationRadius();
+		stationRadius = this.spriteAssets.getStationRadius();
 		arrowRadius = this.spriteAssets.getStationRadius() - this.spriteAssets.getStationStrokeWidth() -1;
 		
 		pullRadius = arrowRadius - radius;
@@ -50,11 +52,21 @@ public class PlayerSprite extends Sprite {
 		startX = x;
 		startY = y;
 		
-		paint = new Paint();
-		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setStrokeJoin(Paint.Join.ROUND);
-		paint.setStrokeCap(Paint.Cap.ROUND);
+		paintStation = new Paint();
+		paintStation.setFlags(Paint.ANTI_ALIAS_FLAG);
+		paintStation.setStyle(Paint.Style.STROKE);
+		paintStation.setStrokeJoin(Paint.Join.ROUND);
+		paintStation.setStrokeCap(Paint.Cap.ROUND);
+		paintStation.setStrokeWidth(spriteAssets.getBigSpriteStrokeWidth());
+		paintStation.setColor(GameTheme.BLUE);
+
+		paintPlayer = new Paint();
+		paintPlayer.setFlags(Paint.ANTI_ALIAS_FLAG);
+		paintPlayer.setStyle(Paint.Style.STROKE);
+		paintPlayer.setStrokeJoin(Paint.Join.ROUND);
+		paintPlayer.setStrokeCap(Paint.Cap.ROUND);
+		paintPlayer.setStrokeWidth(spriteAssets.getBigSpriteStrokeWidth());
+		paintPlayer.setColor(Color.WHITE);
 
 		stationImage = this.spriteAssets.getStationImage();
 		stationX = startX - stationImage.getWidth()/2;
@@ -67,15 +79,15 @@ public class PlayerSprite extends Sprite {
 		GRAPHICS.drawImage(stationImage, stationX, stationY);
 
 		// aim arrow
-		if(!isTouched) {			
+		if(!isTouched) {
 			deltaX = startX - x;
 			deltaY = startY - y;
 			rad = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
 			
 			degrees = (float)(Math.atan2(deltaY, deltaX)*(180/Math.PI)+90);
 
-			px = ((deltaX/rad)*arrowRadius) + startX;
-			py = ((deltaY/rad)*arrowRadius) + startY;
+			px = (deltaX/rad*arrowRadius) + startX;
+			py = (deltaY/rad*arrowRadius) + startY;
 			
 			negativeArmX = (int) (px - spriteAssets.getArrowArmLength());
 			positiveArmX = (int) (px + spriteAssets.getArrowArmLength());
@@ -85,25 +97,19 @@ public class PlayerSprite extends Sprite {
 			arrow.setLastPoint(negativeArmX, positiveArmY); // left arm
 			arrow.lineTo((int) px, (int) py); // center
 			arrow.lineTo(positiveArmX, positiveArmY); // right arm
-			
-			paint.setStrokeWidth(spriteAssets.getBigSpriteStrokeWidth());
-			paint.setColor(Color.rgb(0, 175, 255));
-			
+						
 			GRAPHICS.save();
 			GRAPHICS.rotate(degrees, (int)px ,(int)py);
-			GRAPHICS.drawPath(arrow, paint);
+			GRAPHICS.drawPath(arrow, paintPlayer);
 			GRAPHICS.restore();
 		}
 		
 		// player sprite
 		if(spawning) {
-			paint.setStrokeWidth((float)(spawningRadius*0.1));
-			paint.setColor(Color.WHITE);
-			GRAPHICS.drawCircle(x, y, spawningRadius, paint);
+			GRAPHICS.drawCircle(x, y, spawningRadius, paintPlayer);
 		}
 		else {
-			paint.setColor(Color.WHITE);
-			GRAPHICS.drawCircle(x, y, radius, paint);
+			GRAPHICS.drawCircle(x, y, radius, paintPlayer);
 		}
 	}
 	
@@ -165,15 +171,34 @@ public class PlayerSprite extends Sprite {
 		bounces = 0;
 		spawning = true;
 		spawningRadius = 0;
+		hitCount = 0;
 	}
 	
 	public void setXY(int x, int y) {
 		double dX = startX - x;
 		double dY = startY - y;
 		double r = Math.sqrt((dX*dX)+(dY*dY));
-		
+
+		if(r > pullRadius) {
+			this.x = (int) ((dX/r)*(-pullRadius) + startX);
+			this.y = (int) ((dY/r)*(-pullRadius) + startY);
+		}
+		else {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+	public void setVXVY(float x, float y) {
+		double dX = startX - x;
+		double dY = startY - y;
+		double r = Math.sqrt((dX*dX)+(dY*dY));
+
 		this.x = (int) ((dX/r)*(-pullRadius) + startX);
 		this.y = (int) ((dY/r)*(-pullRadius) + startY);
+
+		this.setVX(startX - this.x);
+		this.setVY(startY - this.y);
 	}
 	
 	public float getStartX() {
@@ -201,6 +226,14 @@ public class PlayerSprite extends Sprite {
 	}
 	
 	public float getOuterRadius() {
-		return stationRaduis;
+		return stationRadius;
+	}
+	
+	public void addHit() {
+		hitCount++;
+	}
+
+	public int getHit() {
+		return hitCount;
 	}
 }

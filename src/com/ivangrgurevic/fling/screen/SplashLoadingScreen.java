@@ -1,13 +1,13 @@
 package com.ivangrgurevic.fling.screen;
 
+import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
-import com.ivangrgurevic.fling.screen.layer.BackgroundLayer;
 import com.ivangrgurevic.fling.util.GameTheme;
 import com.ivangrgurevic.game.R;
 
@@ -19,10 +19,8 @@ public class SplashLoadingScreen extends Screen {
 	private Paint paintSplash;
 
 	private boolean loaded;
-	private SpriteAssets spriteAssets;
-	
-	private BackgroundLayer backgroundLayer;
-	
+	private GameAssets gameAssets;
+		
 	private final String AUTHOR;
 
 	public SplashLoadingScreen(Game game) {
@@ -31,9 +29,7 @@ public class SplashLoadingScreen extends Screen {
 		AUTHOR = ((AndroidGame)game).getResources().getString(R.string.author);
 		
 		Graphics g = game.getGraphics();
-		
-		backgroundLayer = new BackgroundLayer(this, g);
-		
+				
 		// splash
 		x = g.getWidth() / 2;
 		y = g.getHeight() / 2;
@@ -51,7 +47,7 @@ public class SplashLoadingScreen extends Screen {
 	public void update(float deltaTime) {		
 		if(!loaded) {
 			Graphics g = game.getGraphics();
-			spriteAssets = new SpriteAssets(g);
+			gameAssets = new GameAssets(g);
 	
 			// This is how you would load a sound if you had one.
 			// Assets.click = game.getAudio().createSound("explode.ogg");
@@ -63,14 +59,14 @@ public class SplashLoadingScreen extends Screen {
 	@Override
 	public void paint(float deltaTime) {
 		Graphics g = game.getGraphics();
-		
-		backgroundLayer.draw(deltaTime);
-		
+				
+		g.drawColor(Color.BLACK);
+
 		alpha -= 2;
 		
 		if(alpha <= 0) {
 			alpha = 0;
-			game.setScreen(new GameScreen(game, spriteAssets));			
+			game.setScreen(new GameScreen(game, gameAssets));			
 		}
 		
 		paintSplash.setAlpha(alpha);

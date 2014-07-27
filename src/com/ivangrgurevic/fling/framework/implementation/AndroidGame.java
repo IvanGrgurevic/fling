@@ -18,18 +18,18 @@ import com.ivangrgurevic.fling.framework.Input;
 import com.ivangrgurevic.fling.framework.Screen;
 
 public abstract class AndroidGame extends Activity implements Game {
-	AndroidFastRenderView renderView;
-	Graphics graphics;
-	Audio audio;
-	Input input;
-	FileIO fileIO;
-	Screen screen;
+	private AndroidFastRenderView renderView;
+	private Graphics graphics;
+	private Audio audio;
+	private Input input;
+	private FileIO fileIO;
+	private Screen screen;
 	//WakeLock wakeLock;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+				
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);

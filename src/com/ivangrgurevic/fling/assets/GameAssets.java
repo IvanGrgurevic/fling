@@ -2,15 +2,17 @@ package com.ivangrgurevic.fling.assets;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Bitmap.Config;
 
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Image;
+import com.ivangrgurevic.fling.util.GameTheme;
 
-public class SpriteAssets {
+public class GameAssets {
+	// border
+	public final float BORDER_STROKE_WIDTH;
+	// sprites
 	private int maxVelocity;
 	// big sprite
 	private float bigSpriteX;
@@ -34,7 +36,9 @@ public class SpriteAssets {
 	private final double DISPERSION_STROKE_WIDTH_PERCENTILE = 0.002;
 
 	
-	public SpriteAssets(Graphics g) {
+	public GameAssets(Graphics g) {
+		BORDER_STROKE_WIDTH = (float) ((g.getWidth()*0.005 < 2) ? 2 : g.getWidth()*0.005); // because less than 2 pixels don't display nicely
+		
 		maxVelocity = (int) (g.getHeight() * 0.13);
 		
 		// dispersion effect
@@ -59,15 +63,11 @@ public class SpriteAssets {
 		Bitmap bitmap;
 		Canvas canvas;
 		Paint paint;
-		Path path;
 		
 		int antiAlias = 2;
 		
 		int spriteBitmapSize = (int) (smallSpriteRadius*2 + smallSpriteStrokeWidth)+antiAlias*2;
 		int spriteBitmapCenter = spriteBitmapSize/2;
-		float armLength = (float) (smallSpriteRadius*0.4);
-		float negativeArm = spriteBitmapCenter-armLength;
-		float positiveArm = spriteBitmapCenter+armLength;
 		
 		// minus Sprite
 		bitmap = Bitmap.createBitmap(spriteBitmapSize, spriteBitmapSize, Config.ARGB_4444);
@@ -75,19 +75,19 @@ public class SpriteAssets {
 		
 		paint = new Paint();
 		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		paint.setStyle(Paint.Style.STROKE);
-		paint.setColor(Color.rgb(255,175,0));
-		paint.setStrokeWidth(smallSpriteStrokeWidth);
-		paint.setStrokeCap(Paint.Cap.ROUND);
+		paint.setStyle(Paint.Style.FILL);
+		paint.setColor(GameTheme.YELLOW);
+		//paint.setStrokeWidth(smallSpriteStrokeWidth);
+		//paint.setStrokeCap(Paint.Cap.ROUND);
 		
 		canvas.drawCircle(spriteBitmapCenter, spriteBitmapCenter, smallSpriteRadius, paint);
 		
-		path = new Path();
+		/*path = new Path();
 		path.setLastPoint(negativeArm, negativeArm); // top-left point
 		path.lineTo(positiveArm, positiveArm); // bottom-right point
 		path.moveTo(negativeArm, positiveArm); // bottom-left point
 		path.lineTo(positiveArm, negativeArm); // top-right point
-		canvas.drawPath(path, paint);
+		canvas.drawPath(path, paint);*/
 		
 		minusSpriteImage = g.newImage(bitmap); // END minus Sprite
 		
@@ -117,7 +117,6 @@ public class SpriteAssets {
 		// player station
 		spriteBitmapSize = (int) (stationRadius*2 + stationStrokeWidth)+antiAlias*2;
 		spriteBitmapCenter = spriteBitmapSize/2;
-		float stationCenterCircle = (float) (bigSpriteRadius*1.2);
 		
 		bitmap = Bitmap.createBitmap(spriteBitmapSize, spriteBitmapSize, Config.ARGB_4444);
 		canvas = new Canvas(bitmap);
@@ -126,13 +125,11 @@ public class SpriteAssets {
 		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 		paint.setStyle(Paint.Style.STROKE);
 		paint.setStrokeWidth(stationStrokeWidth);
-		paint.setColor(Color.rgb(0, 175, 255));
+		paint.setColor(GameTheme.BLUE);
 		paint.setAlpha(100);			
 
 		canvas.drawCircle(spriteBitmapCenter, spriteBitmapCenter, stationRadius, paint);
-		paint.setAlpha(255);
-		canvas.drawCircle(spriteBitmapCenter, spriteBitmapCenter, stationCenterCircle, paint);
-		
+				
 		stationImage = g.newImage(bitmap);
 		
 		// play station arrow arm length

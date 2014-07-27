@@ -3,13 +3,10 @@ package com.ivangrgurevic.fling.screen;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Vibrator;
 import android.widget.Toast;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
@@ -31,7 +28,7 @@ public class GameScreen extends Screen {
 
 	private Vibrator vibrator;
 
-	private SpriteAssets spriteAssets;
+	private GameAssets gameAssets;
 	private Graphics graphics;
 	
 	private BackgroundLayer backgroundLayer;
@@ -40,16 +37,16 @@ public class GameScreen extends Screen {
 	private PausedLayer pausedLayer;
 	private GameOverLayer gameOverLayer;
 		
-	public GameScreen(Game game, SpriteAssets spriteAssets) {
+	public GameScreen(Game game, GameAssets gameAssets) {
 		super(game);
-		
-        graphics = this.game.getGraphics();
-		this.spriteAssets = spriteAssets;
+
+		graphics = this.game.getGraphics();
+		this.gameAssets = gameAssets;
 		
 		vibrator = (Vibrator)((Context)game).getSystemService(Context.VIBRATOR_SERVICE);
 		
-		backgroundLayer = new BackgroundLayer(this, graphics);
-		gamePlayLayer = new GamePlayLayer(this, graphics, spriteAssets);
+		backgroundLayer = new BackgroundLayer(this, graphics, gameAssets);
+		gamePlayLayer = new GamePlayLayer(this, graphics, gameAssets, game);
 		pausedLayer = new PausedLayer(this, graphics);
 		menuBarLayer = new MenuBarLayer(this, graphics);
 		gameOverLayer = null;
@@ -61,6 +58,7 @@ public class GameScreen extends Screen {
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 
 		if (state == GameState.PLAYING) {
+			backgroundLayer.update(touchEvents, deltaTime);
 			gamePlayLayer.update(touchEvents, deltaTime);
 			
 			if (gamePlayLayer.isGameOver()) {
@@ -69,14 +67,16 @@ public class GameScreen extends Screen {
 			}
 		}
 		else if (state == GameState.PAUSED) {
+			backgroundLayer.update(touchEvents, deltaTime);
 			pausedLayer.update(touchEvents, deltaTime);
 			menuBarLayer.update(touchEvents, deltaTime);
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
+			backgroundLayer.update(touchEvents, deltaTime);
 			gameOverLayer.update(touchEvents, deltaTime);
 			menuBarLayer.update(touchEvents, deltaTime);
 		}
@@ -84,7 +84,7 @@ public class GameScreen extends Screen {
 	
 	//=============================================================== PAINT
 	@Override
-	public void paint(float deltaTime) {		
+	public void paint(float deltaTime) {
 		if (state == GameState.PLAYING) {
 			backgroundLayer.draw(deltaTime);
 			gamePlayLayer.draw(deltaTime);
@@ -97,13 +97,18 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, spriteAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
+			//graphics.save();
+			//graphics.rotate((float)(Math.random()-0.5), (int)(graphics.getWidth()*Math.random()), (int)(graphics.getHeight()*Math.random()));
+
 			backgroundLayer.draw(deltaTime);
 			//gamePlayLayer.draw(deltaTime);
 			gameOverLayer.draw(deltaTime);
 			//menuBarLayer.draw(deltaTime);
+			
+			//graphics.restore();
 		}
 	}
 
@@ -158,12 +163,12 @@ public class GameScreen extends Screen {
 	}
 	
 	public void newGame() {
-		game.setScreen(new GameScreen(game, spriteAssets));
+		game.setScreen(new GameScreen(game, gameAssets));
 	}
 	
-	private void browserTwitterIntent() { // should be moved to another class // maybe it should stay here
+	/*private void browserTwitterIntent() { // should be moved to another class // maybe it should stay here
 		Resources res = ((AndroidGame) game).getResources();
 		String url = String.format(res.getString(R.string.twitter_intent_url), gamePlayLayer.getPoints());
 		((AndroidGame) game).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));	
-	}
+	}*/
 }

@@ -3,14 +3,16 @@ package com.ivangrgurevic.fling.screen.layer;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
 import com.ivangrgurevic.fling.framework.Screen;
+import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.sprite.DispersionEffect;
 import com.ivangrgurevic.fling.sprite.MinusSprite;
 import com.ivangrgurevic.fling.sprite.PlayerSprite;
@@ -18,68 +20,72 @@ import com.ivangrgurevic.fling.util.Range;
 
 public class GamePlayLayer extends Layer {
 	
-	private SpriteAssets spriteAssets;
+	private GameAssets spriteAssets;
 	
 	private PlayerSprite playerSprite;
 	private boolean playerSpriteSelected = false;
 	private ArrayList<MinusSprite> minusSpriteArr;
 	private ArrayList<DispersionEffect> dispersionArr;
+	
+	private int minusSpriteCount = 0;
+	
 	private double spriteSpeed;
 
 	private boolean gameOver = false;
 	
 	private int points = 0;	
-	private final int LEVEL_X;
-	private final int LEVEL_Y;
+	private final int POINTS_X;
+	private final int POINTS_Y;
 	private final float LEVEL_TEXT_SIZE;
 	
 	private final int LEVEL_COLOR;
 	
-	private final int SPRITE_CREATION_RATE = 120*1000;
+	private final int SPRITE_CREATION_RATE = 180*1000;
 	private float gameTime = 0;
 	private final double SPRITE_CREATION_START = 0.01;
 
-	private Paint paintLevel;
+	private Paint paintPoints;
 
 	
-	public GamePlayLayer(Screen screen, Graphics graphics, SpriteAssets spriteAssets) {
+	public GamePlayLayer(Screen screen, Graphics graphics, GameAssets gameAssets, Game game) {
 		super(screen, graphics);
 		
-		this.spriteAssets = spriteAssets;
+		this.spriteAssets = gameAssets;
 		
-		playerSprite = new PlayerSprite(0, 0, spriteAssets, graphics);
+		playerSprite = new PlayerSprite(0, 0, gameAssets, graphics);
 
 		// sprite
 		minusSpriteArr = new ArrayList<MinusSprite>();
-		//plusSpriteArr = new ArrayList<PlusSprite>();
 				
 		spriteSpeed = this.spriteAssets.getSmallSpriteSpeed();
 
 		// dispersion effect
 		dispersionArr = new ArrayList<DispersionEffect>();
-		
+		dispersionArr.add(new DispersionEffect(0, 0, 0, 0, graphics.getWidth(), graphics.getHeight(), Color.WHITE, 2000, gameAssets, graphics));				
+
 		// level
-		LEVEL_X = graphics.getWidth()/2;
-		LEVEL_Y = graphics.getHeight()/4;
+		POINTS_X = graphics.getWidth()/2;
+		POINTS_Y = graphics.getHeight()/4;
 		
 		// constants for paint objects
 		LEVEL_COLOR = Color.rgb(60,60,60);
 		LEVEL_TEXT_SIZE = graphics.getHeight()/4;
 		
 		// paint objects
-		Typeface typeFace = Typeface.create("Droid Sans Mono", Typeface.NORMAL);
-		paintLevel = new Paint();
-		paintLevel.setTypeface(typeFace);
-		paintLevel.setTextSize(LEVEL_TEXT_SIZE);
-		paintLevel.setTextAlign(Paint.Align.CENTER);
-		paintLevel.setAntiAlias(true);
-		paintLevel.setColor(LEVEL_COLOR);
+		Typeface typeface = Typeface.createFromAsset(((Context)game).getAssets(), "fonts/Square.otf");
+		
+		paintPoints = new Paint();
+		paintPoints.setTypeface(typeface);
+		paintPoints.setTextSize(LEVEL_TEXT_SIZE);
+		paintPoints.setTextAlign(Paint.Align.CENTER);
+		paintPoints.setAntiAlias(true);
+		paintPoints.setColor(LEVEL_COLOR);
 	}
 
 	@Override
 	public void draw(float deltaTime) {		
-		// level
-		graphics.drawString(String.valueOf(points), LEVEL_X, LEVEL_Y, paintLevel);
+		// points
+		graphics.drawString(String.valueOf(points), POINTS_X, POINTS_Y, paintPoints);
 		
 		// player
 		playerSprite.draw(deltaTime);
@@ -118,13 +124,10 @@ public class GamePlayLayer extends Layer {
 			
 			double playerDeltaX = sprite.getX() - playerSprite.getX();
 			double playerDeltaY = sprite.getY() - playerSprite.getY();
-			double stationDeltaX = sprite.getX() - playerSprite.getStartX();
-			double stationDeltaY = sprite.getY() - playerSprite.getStartY();
 			
 			double playerRad = Math.sqrt((playerDeltaX*playerDeltaX)+(playerDeltaY*playerDeltaY));
-			double stationRad = Math.sqrt((stationDeltaX*stationDeltaX)+(stationDeltaY*stationDeltaY));
 			
-			if(stationRad < (sprite.getRadius()+playerSprite.getOuterRadius())) {
+			if((sprite.getY()+sprite.getRadius()) > graphics.getHeight()) {
 				minusSpriteArr.remove(i);
 				i--;
 				dispersionArr.add(new DispersionEffect(sprite.getX(), sprite.getY(), sprite.getVX()*-1, sprite.getVY()*-1, sprite.getRadius(), sprite.getColor(), 80, spriteAssets, graphics));				
@@ -177,11 +180,7 @@ public class GamePlayLayer extends Layer {
 					playerSprite.setIsTouched(true);
 					playerSpriteSelected = false;
 					
-					double deltaX = playerSprite.getStartX() - playerSprite.getX();
-					double deltaY = playerSprite.getStartY() - playerSprite.getY();
-
-					playerSprite.setVX(deltaX);
-					playerSprite.setVY(deltaY);
+					playerSprite.setVXVY(playerSprite.getX(), playerSprite.getY());
 				}
 			}
 		}
@@ -208,7 +207,8 @@ public class GamePlayLayer extends Layer {
 		double spriteCreationProbability = SPRITE_CREATION_START+(gameTime/SPRITE_CREATION_RATE);
 		
 		if(Math.random() < spriteCreationProbability) {
-			minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, graphics));	
+			minusSpriteArr.add(new MinusSprite(vx, vy, spriteAssets, graphics));
+			minusSpriteCount++;
 		}
 	}
 	
@@ -217,9 +217,18 @@ public class GamePlayLayer extends Layer {
 	}
 	
 	private void addPoint() {
+		playerSprite.addHit();
 		points++;
 	}
 	
+	public int getHit() {
+		return playerSprite.getHit();
+	}
+
+	public int getTotalSprites() {
+		return minusSpriteCount;
+	}
+
 	public int getPoints() {
 		return points;
 	}

@@ -1,6 +1,6 @@
 package com.ivangrgurevic.fling.sprite;
 
-import com.ivangrgurevic.fling.assets.SpriteAssets;
+import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 
 public abstract class Sprite {
@@ -10,7 +10,7 @@ public abstract class Sprite {
 	protected double vy;
 	protected float radius;
 	
-	protected SpriteAssets spriteAssets;
+	protected GameAssets spriteAssets;
 
 	protected final Graphics GRAPHICS;
 	public final double VELOCITY_PERCENTILE = 0.18;
@@ -18,7 +18,7 @@ public abstract class Sprite {
 	public final int VELOCITY_MIN = 1;
 
 
-	public Sprite(double vx, double vy, SpriteAssets spriteAssets, Graphics graphics) {
+	public Sprite(double vx, double vy, GameAssets spriteAssets, Graphics graphics) {
 		this.vx = vx;
 		this.vy = vy;
 		
