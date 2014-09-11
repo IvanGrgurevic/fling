@@ -38,7 +38,7 @@ public class GamePlayLayer extends Layer {
 	private final int POINTS_Y;
 	private final float LEVEL_TEXT_SIZE;
 	
-	private final int LEVEL_COLOR;
+	private final int LEVEL_COLOR = Color.rgb(60,60,60);
 	
 	private final int SPRITE_CREATION_RATE = 180*1000;
 	private float gameTime = 0;
@@ -68,7 +68,6 @@ public class GamePlayLayer extends Layer {
 		POINTS_Y = graphics.getHeight()/4;
 		
 		// constants for paint objects
-		LEVEL_COLOR = Color.rgb(60,60,60);
 		LEVEL_TEXT_SIZE = graphics.getHeight()/4;
 		
 		// paint objects
@@ -100,8 +99,6 @@ public class GamePlayLayer extends Layer {
 		}
 	}
 	
-	float deltaTimee = 0;
-
 	@Override
 	public void update(List<TouchEvent> touchEvents, float deltaTime) {
 		updateTouchEvents(touchEvents);

@@ -24,10 +24,12 @@ public class MenuBarLayer extends Layer {
 		height = graphics.getHeightPercentile(0.1);
 	}
 
+	@Override
 	public void draw(float deltaTime) {
 		graphics.drawRect(x, y, width, height, Color.RED);
 	}
 
+	@Override
 	public void update(List<TouchEvent> touchEvents, float deltaTime) {
 		
 	}

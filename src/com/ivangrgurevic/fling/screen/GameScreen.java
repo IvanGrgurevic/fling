@@ -15,7 +15,6 @@ import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
 import com.ivangrgurevic.fling.screen.layer.BackgroundLayer;
 import com.ivangrgurevic.fling.screen.layer.GameOverLayer;
 import com.ivangrgurevic.fling.screen.layer.GamePlayLayer;
-import com.ivangrgurevic.fling.screen.layer.MenuBarLayer;
 import com.ivangrgurevic.fling.screen.layer.PausedLayer;
 import com.ivangrgurevic.game.R;
 
@@ -32,7 +31,7 @@ public class GameScreen extends Screen {
 	private Graphics graphics;
 	
 	private BackgroundLayer backgroundLayer;
-	private MenuBarLayer menuBarLayer;
+	//private MenuBarLayer menuBarLayer;
 	private GamePlayLayer gamePlayLayer;
 	private PausedLayer pausedLayer;
 	private GameOverLayer gameOverLayer;
@@ -47,8 +46,8 @@ public class GameScreen extends Screen {
 		
 		backgroundLayer = new BackgroundLayer(this, graphics, gameAssets);
 		gamePlayLayer = new GamePlayLayer(this, graphics, gameAssets, game);
-		pausedLayer = new PausedLayer(this, graphics);
-		menuBarLayer = new MenuBarLayer(this, graphics);
+		pausedLayer = new PausedLayer(this, graphics, game);
+		//menuBarLayer = new MenuBarLayer(this, graphics);
 		gameOverLayer = null;
 	}
 
@@ -69,7 +68,7 @@ public class GameScreen extends Screen {
 		else if (state == GameState.PAUSED) {
 			backgroundLayer.update(touchEvents, deltaTime);
 			pausedLayer.update(touchEvents, deltaTime);
-			menuBarLayer.update(touchEvents, deltaTime);
+			//menuBarLayer.update(touchEvents, deltaTime);
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
@@ -78,7 +77,7 @@ public class GameScreen extends Screen {
 			
 			backgroundLayer.update(touchEvents, deltaTime);
 			gameOverLayer.update(touchEvents, deltaTime);
-			menuBarLayer.update(touchEvents, deltaTime);
+			//menuBarLayer.update(touchEvents, deltaTime);
 		}
 	}
 	
@@ -93,22 +92,15 @@ public class GameScreen extends Screen {
 			backgroundLayer.draw(deltaTime);
 			gamePlayLayer.draw(deltaTime);
 			pausedLayer.draw(deltaTime);
-			menuBarLayer.draw(deltaTime);
+			//menuBarLayer.draw(deltaTime);
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
 				gameOverLayer = new GameOverLayer(this, graphics, gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
-			//graphics.save();
-			//graphics.rotate((float)(Math.random()-0.5), (int)(graphics.getWidth()*Math.random()), (int)(graphics.getHeight()*Math.random()));
-
 			backgroundLayer.draw(deltaTime);
-			//gamePlayLayer.draw(deltaTime);
 			gameOverLayer.draw(deltaTime);
-			//menuBarLayer.draw(deltaTime);
-			
-			//graphics.restore();
 		}
 	}
 

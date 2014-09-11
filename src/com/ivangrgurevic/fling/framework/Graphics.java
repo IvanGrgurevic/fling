@@ -62,4 +62,9 @@ public interface Graphics {
 	public void drawImage(Image Image, float x, float y, Paint paint);
 
 	public void drawImage(Image Image, float x, float y);
+
+	void drawImage(Image Image, int x, int y, int alpha);
+
+	void drawScaledImage(Image Image, int x, int y, int width, int height,
+			int srcX, int srcY, int srcWidth, int srcHeight);
 }

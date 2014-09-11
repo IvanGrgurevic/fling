@@ -34,10 +34,9 @@ public class GameAssets {
 	// dispersion effect
 	private int dispersionStrokeWidth;
 	private final double DISPERSION_STROKE_WIDTH_PERCENTILE = 0.002;
-
-	
+		
 	public GameAssets(Graphics g) {
-		BORDER_STROKE_WIDTH = (float) ((g.getWidth()*0.005 < 2) ? 2 : g.getWidth()*0.005); // because less than 2 pixels don't display nicely
+		BORDER_STROKE_WIDTH = (float) ((g.getWidth()*0.005 < 2) ? 2 : g.getWidth()*0.005); // because less than 2 pixels doesn't display nicely
 		
 		maxVelocity = (int) (g.getHeight() * 0.13);
 		
