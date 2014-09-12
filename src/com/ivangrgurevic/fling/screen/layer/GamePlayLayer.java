@@ -3,11 +3,10 @@ package com.ivangrgurevic.fling.screen.layer;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 
+import com.ivangrgurevic.fling.assets.Assets;
 import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
@@ -70,11 +69,9 @@ public class GamePlayLayer extends Layer {
 		// constants for paint objects
 		LEVEL_TEXT_SIZE = graphics.getHeight()/4;
 		
-		// paint objects
-		Typeface typeface = Typeface.createFromAsset(((Context)game).getAssets(), "fonts/Square.otf");
-		
+		// paint objects		
 		paintPoints = new Paint();
-		paintPoints.setTypeface(typeface);
+		paintPoints.setTypeface(Assets.typeface);
 		paintPoints.setTextSize(LEVEL_TEXT_SIZE);
 		paintPoints.setTextAlign(Paint.Align.CENTER);
 		paintPoints.setAntiAlias(true);

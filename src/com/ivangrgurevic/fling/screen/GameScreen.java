@@ -16,6 +16,7 @@ import com.ivangrgurevic.fling.screen.layer.BackgroundLayer;
 import com.ivangrgurevic.fling.screen.layer.GameOverLayer;
 import com.ivangrgurevic.fling.screen.layer.GamePlayLayer;
 import com.ivangrgurevic.fling.screen.layer.PausedLayer;
+import com.ivangrgurevic.fling.util.Score;
 import com.ivangrgurevic.game.R;
 
 public class GameScreen extends Screen {
@@ -61,6 +62,7 @@ public class GameScreen extends Screen {
 			gamePlayLayer.update(touchEvents, deltaTime);
 			
 			if (gamePlayLayer.isGameOver()) {
+				Score.set((Context)game, gamePlayLayer.getPoints());
 				state = GameState.OVER;
 				vibrator.vibrate(50);
 			}
@@ -72,7 +74,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, Score.get((Context)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.update(touchEvents, deltaTime);
@@ -96,7 +98,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, Score.get((Context)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.draw(deltaTime);
@@ -106,15 +108,9 @@ public class GameScreen extends Screen {
 
 	//=============================================================== OTHER
 	private void nullify() {
-		// DO NOT NULLIFY 'spriteAssets'
-		// spriteAssets = null; 
-
 		state = null;
-
 		graphics = null;
-		
 		backgroundLayer = null;
-		//menuBarLayer = null;
 		gamePlayLayer = null;
 		pausedLayer = null;
 		gameOverLayer = null;

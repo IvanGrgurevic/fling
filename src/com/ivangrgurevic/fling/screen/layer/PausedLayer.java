@@ -2,9 +2,6 @@ package com.ivangrgurevic.fling.screen.layer;
 
 import java.util.List;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
@@ -17,7 +14,6 @@ import com.ivangrgurevic.fling.framework.Input.TouchEvent;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.screen.GameScreen;
 import com.ivangrgurevic.fling.util.Range;
-import com.ivangrgurevic.game.R;
 
 public class PausedLayer extends Layer {
 
@@ -38,8 +34,6 @@ public class PausedLayer extends Layer {
 	
 	public PausedLayer(Screen screen, Graphics graphics, Game game) {
 		super(screen, graphics);
-
-		Resources res = ((Context)game).getResources();
 		
 		int btnPadding = graphics.getWidth()/5;
 		int widthSize = graphics.getWidth() - btnPadding*2;

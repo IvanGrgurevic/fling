@@ -3,14 +3,12 @@ package com.ivangrgurevic.fling.screen.layer;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 import com.ivangrgurevic.fling.assets.Assets;
 import com.ivangrgurevic.fling.assets.GameAssets;
-import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Image;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
@@ -21,7 +19,6 @@ import com.ivangrgurevic.fling.sprite.MinusSprite;
 import com.ivangrgurevic.fling.sprite.PlayerSprite;
 import com.ivangrgurevic.fling.util.GameTheme;
 import com.ivangrgurevic.fling.util.Range;
-import com.ivangrgurevic.game.R;
 
 public class GameOverLayer extends Layer {
 	private ArrayList<DispersionEffect> dispersionArr;
@@ -32,9 +29,26 @@ public class GameOverLayer extends Layer {
 	private final int playBtnWidth;
 	private final int playBtnHeight;
 
-	public GameOverLayer(Screen screen, Graphics g, GameAssets gameAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<DispersionEffect> dispersionEffects) {
+	private final int HIGH_SCORE;
+	private final int SCORE;
+	
+	private final int POINTS_X;
+	private final int POINTS_Y;
+	private final float HIGH_SCORE_TEXT_SIZE;
+	private final float SCORE_TEXT_SIZE;
+	
+	private Paint paintHighScore;
+	private Paint paintScore;
+	
+	private Rect scoreBounds = new Rect();
+	private Rect highScoreBounds = new Rect();
+
+	public GameOverLayer(Screen screen, Graphics g, int highScore, int score, GameAssets gameAssets, PlayerSprite playerSprite, ArrayList<MinusSprite> minusSprites, ArrayList<DispersionEffect> dispersionEffects) {
 		super(screen, g);
 
+		HIGH_SCORE = highScore;
+		SCORE = score;
+		
 		dispersionArr = new ArrayList<DispersionEffect>();
 		
 		// convert all sprites to dispersion effects
@@ -66,11 +80,34 @@ public class GameOverLayer extends Layer {
 		playBtnWidth = btnSize;
 		playBtnHeight = btnSize;
 
-	}
+		// points
+		POINTS_X = graphics.getWidth()/2;
+		POINTS_Y = graphics.getHeight()/4;
+		HIGH_SCORE_TEXT_SIZE = graphics.getHeight()/8;
+		SCORE_TEXT_SIZE = graphics.getHeight()/4;
+		
+		paintHighScore = new Paint();
+		paintHighScore.setTypeface(Assets.typeface);
+		paintHighScore.setTextSize(HIGH_SCORE_TEXT_SIZE);
+		paintHighScore.setTextAlign(Paint.Align.CENTER);
+		paintHighScore.setAntiAlias(true);
+		paintHighScore.setColor(Color.rgb(60, 60, 60));
+
+		paintScore = new Paint();
+		paintScore.setTypeface(Assets.typeface);
+		paintScore.setTextSize(SCORE_TEXT_SIZE);
+		paintScore.setTextAlign(Paint.Align.CENTER);
+		paintScore.setAntiAlias(true);
+		paintScore.setColor(Color.WHITE);
+}
 	
 	@Override
 	public void draw(float deltaTime) {
 		if(dispersionArr.isEmpty()) {
+			// points
+			graphics.drawString(String.valueOf(SCORE), POINTS_X, POINTS_Y, paintScore);
+			graphics.drawString(String.valueOf(HIGH_SCORE), POINTS_X, (int)(POINTS_Y+HIGH_SCORE_TEXT_SIZE), paintHighScore);
+
 			graphics.drawScaledImage(playBtn, playBtnX, playBtnY, playBtnWidth, playBtnHeight, 0, 0, playBtn.getWidth(), playBtn.getHeight());
 
 		}
@@ -84,6 +121,9 @@ public class GameOverLayer extends Layer {
 	@Override
 	public void update(List<TouchEvent> touchEvents, float deltaTime) {
 		if(dispersionArr.isEmpty()) {
+			paintHighScore.getTextBounds(String.valueOf(HIGH_SCORE), 0 , String.valueOf(HIGH_SCORE).length(), highScoreBounds);
+			paintScore.getTextBounds(String.valueOf(HIGH_SCORE), 0 , String.valueOf(HIGH_SCORE).length(), scoreBounds);
+
 			updateTouchEvents(touchEvents);
 		}
 		else {

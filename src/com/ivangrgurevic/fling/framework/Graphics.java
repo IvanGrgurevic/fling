@@ -25,8 +25,6 @@ public interface Graphics {
 
 	public void drawString(String text, int x, int y, Paint paint);
 
-	public int getWidth();
-
 	public int getHeight();
 
 	public void drawARGB(int i, int j, int k, int l);
@@ -67,4 +65,6 @@ public interface Graphics {
 
 	void drawScaledImage(Image Image, int x, int y, int width, int height,
 			int srcX, int srcY, int srcWidth, int srcHeight);
+
+	public int getWidth();
 }
