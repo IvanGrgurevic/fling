@@ -26,12 +26,10 @@ public class Fling extends AndroidGame {
     @Override
     public void onResume() {
         super.onResume();
-        Assets.theme.play();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Assets.theme.pause();
     }
 }

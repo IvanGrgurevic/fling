@@ -4,20 +4,17 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Vibrator;
-import android.widget.Toast;
 
 import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
-import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
 import com.ivangrgurevic.fling.screen.layer.BackgroundLayer;
 import com.ivangrgurevic.fling.screen.layer.GameOverLayer;
 import com.ivangrgurevic.fling.screen.layer.GamePlayLayer;
 import com.ivangrgurevic.fling.screen.layer.PausedLayer;
 import com.ivangrgurevic.fling.util.Score;
-import com.ivangrgurevic.game.R;
 
 public class GameScreen extends Screen {
 	private enum GameState {
@@ -32,7 +29,6 @@ public class GameScreen extends Screen {
 	private Graphics graphics;
 	
 	private BackgroundLayer backgroundLayer;
-	//private MenuBarLayer menuBarLayer;
 	private GamePlayLayer gamePlayLayer;
 	private PausedLayer pausedLayer;
 	private GameOverLayer gameOverLayer;
@@ -48,7 +44,6 @@ public class GameScreen extends Screen {
 		backgroundLayer = new BackgroundLayer(this, graphics, gameAssets);
 		gamePlayLayer = new GamePlayLayer(this, graphics, gameAssets, game);
 		pausedLayer = new PausedLayer(this, graphics, game);
-		//menuBarLayer = new MenuBarLayer(this, graphics);
 		gameOverLayer = null;
 	}
 
@@ -70,7 +65,6 @@ public class GameScreen extends Screen {
 		else if (state == GameState.PAUSED) {
 			backgroundLayer.update(touchEvents, deltaTime);
 			pausedLayer.update(touchEvents, deltaTime);
-			//menuBarLayer.update(touchEvents, deltaTime);
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
@@ -94,7 +88,6 @@ public class GameScreen extends Screen {
 			backgroundLayer.draw(deltaTime);
 			gamePlayLayer.draw(deltaTime);
 			pausedLayer.draw(deltaTime);
-			//menuBarLayer.draw(deltaTime);
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
@@ -115,7 +108,6 @@ public class GameScreen extends Screen {
 		pausedLayer = null;
 		gameOverLayer = null;
 		
-		// Call garbage collector to clean up memory.
 		System.gc();
 	}
 	
@@ -139,24 +131,15 @@ public class GameScreen extends Screen {
 	}
 
 	@Override
-	public void backButton() { // figure out what to do about this...
+	public void backButton() {
 		if (state == GameState.PAUSED || state == GameState.OVER) {
-			//nullify(); // causes game to crash
 			android.os.Process.killProcess(android.os.Process.myPid());
 		}
 		
 		pause();   
-
-        Toast.makeText((AndroidGame)game, R.string.press_back, Toast.LENGTH_SHORT).show(); // might want to remove this...
 	}
 	
 	public void newGame() {
 		game.setScreen(new GameScreen(game, gameAssets));
 	}
-	
-	/*private void browserTwitterIntent() { // should be moved to another class // maybe it should stay here
-		Resources res = ((AndroidGame) game).getResources();
-		String url = String.format(res.getString(R.string.twitter_intent_url), gamePlayLayer.getPoints());
-		((AndroidGame) game).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));	
-	}*/
 }

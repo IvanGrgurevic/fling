@@ -13,9 +13,12 @@ import com.ivangrgurevic.fling.util.GameTheme;
 import com.ivangrgurevic.game.R;
 
 public class SplashLoadingScreen extends Screen {
+	private final int FADE_OUT_RATE = 3;
+	
 	private int alpha = 255;
 	private int x;
 	private int y;
+	
 	private Paint paintSplash;
 
 	private boolean loaded;
@@ -60,7 +63,7 @@ public class SplashLoadingScreen extends Screen {
 				
 		g.drawColor(Color.BLACK);
 
-		alpha -= 2;
+		alpha -= FADE_OUT_RATE;
 		
 		if(alpha <= 0) {
 			alpha = 0;

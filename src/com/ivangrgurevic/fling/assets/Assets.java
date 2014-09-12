@@ -17,19 +17,13 @@ public class Assets {
 	public static Image resetBtn;
 	public static Typeface typeface;
 	
-	public static void load(Fling game) {
-		// music
-		theme = game.getAudio().createMusic("menutheme.mp3");
-		theme.setLooping(true);
-		theme.setVolume(0.85f);
-		theme.play();
-		
-		// btns
+	public static void load(Fling game) {		
+		// buttons
 		Resources res = game.getResources();
 		playBtn = new AndroidImage(BitmapFactory.decodeResource(res, R.drawable.play), ImageFormat.ARGB8888);
 		resetBtn = new AndroidImage(BitmapFactory.decodeResource(res, R.drawable.refresh), ImageFormat.ARGB8888);
 		
 		//font
-		typeface = Typeface.createFromAsset(game.getAssets(), "fonts/Square.otf");
+		typeface = Typeface.createFromAsset(game.getAssets(), "fonts/bit.otf");
 	}
 }
