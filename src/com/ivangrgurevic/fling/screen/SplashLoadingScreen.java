@@ -3,6 +3,7 @@ package com.ivangrgurevic.fling.screen;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.ivangrgurevic.fling.assets.Assets;
 import com.ivangrgurevic.fling.assets.GameAssets;
 import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
@@ -12,7 +13,6 @@ import com.ivangrgurevic.fling.util.GameTheme;
 import com.ivangrgurevic.game.R;
 
 public class SplashLoadingScreen extends Screen {
-	// splash
 	private int alpha = 255;
 	private int x;
 	private int y;
@@ -21,12 +21,12 @@ public class SplashLoadingScreen extends Screen {
 	private boolean loaded;
 	private GameAssets gameAssets;
 		
-	private final String AUTHOR;
+	private final String APP_NAME;
 
 	public SplashLoadingScreen(Game game) {
 		super(game);
 		
-		AUTHOR = ((AndroidGame)game).getResources().getString(R.string.author);
+		APP_NAME = ((AndroidGame)game).getResources().getString(R.string.app_name);
 		
 		Graphics g = game.getGraphics();
 				
@@ -35,10 +35,11 @@ public class SplashLoadingScreen extends Screen {
 		y = g.getHeight() / 2;
 	
 		paintSplash = new Paint();
-		paintSplash.setTextSize(32);
+		paintSplash.setTypeface(Assets.typeface);
 		paintSplash.setTextAlign(Paint.Align.CENTER);
 		paintSplash.setAntiAlias(true);
 		paintSplash.setColor(GameTheme.YELLOW);
+		paintSplash.setTextSize(this.getMaxTextSize(g.getWidth()*3/4));
 		
 		loaded = false;
 	}
@@ -48,10 +49,7 @@ public class SplashLoadingScreen extends Screen {
 		if(!loaded) {
 			Graphics g = game.getGraphics();
 			gameAssets = new GameAssets(g);
-	
-			// This is how you would load a sound if you had one.
-			// Assets.click = game.getAudio().createSound("explode.ogg");
-			
+				
 			loaded = true;
 		}
 	}
@@ -70,9 +68,20 @@ public class SplashLoadingScreen extends Screen {
 		}
 		
 		paintSplash.setAlpha(alpha);
-		g.drawString(AUTHOR, x, y, paintSplash);
+		g.drawString(APP_NAME, x, y, paintSplash);
 	}
 
+	private int getMaxTextSize(float maxWidth)
+	{
+	    int size = 0;       
+
+	    do {
+	    	paintSplash.setTextSize(++ size);
+	    } while(paintSplash.measureText(APP_NAME) < maxWidth);
+
+	    return size;
+	}
+	
 	@Override
 	public void pause() {
 
