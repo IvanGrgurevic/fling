@@ -41,7 +41,7 @@ public class GamePlayLayer extends Layer {
 	
 	private final int SPRITE_CREATION_RATE = 180*1000;
 	private float gameTime = 0;
-	private final double SPRITE_CREATION_START = 0.01;
+	private final double SPRITE_CREATION_START = 0.04;
 
 	private Paint paintPoints;
 

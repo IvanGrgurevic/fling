@@ -10,7 +10,7 @@ import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
 import com.ivangrgurevic.fling.util.GameTheme;
-import com.ivangrgurevic.game.R;
+import com.ivangrgurevic.fling.R;
 
 public class SplashLoadingScreen extends Screen {
 	private final int FADE_OUT_RATE = 3;

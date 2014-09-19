@@ -5,11 +5,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 
 import com.ivangrgurevic.fling.Fling;
+import com.ivangrgurevic.fling.R;
 import com.ivangrgurevic.fling.framework.Graphics.ImageFormat;
 import com.ivangrgurevic.fling.framework.Image;
 import com.ivangrgurevic.fling.framework.Music;
 import com.ivangrgurevic.fling.framework.implementation.AndroidImage;
-import com.ivangrgurevic.game.R;
 
 public class Assets {
 	public static Music theme;
