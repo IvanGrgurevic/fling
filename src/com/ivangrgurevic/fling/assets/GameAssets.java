@@ -42,6 +42,9 @@ public class GameAssets {
 		
 		// dispersion effect
 		dispersionStrokeWidth = (int) (g.getHeight() * DISPERSION_STROKE_WIDTH_PERCENTILE);
+		if(dispersionStrokeWidth < 2) {
+			dispersionStrokeWidth = 2;			
+		}
 		
 		// big sprite
 		bigSpriteX = g.getWidthPercentile(0.5);

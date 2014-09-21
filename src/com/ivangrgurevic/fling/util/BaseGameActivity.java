@@ -123,15 +123,15 @@ public abstract class BaseGameActivity extends FragmentActivity implements
         mHelper.onActivityResult(request, response, data);
     }
 
-    protected GoogleApiClient getApiClient() {
+    public GoogleApiClient getApiClient() {
         return mHelper.getApiClient();
     }
 
-    protected boolean isSignedIn() {
+    public boolean isSignedIn() {
         return mHelper.isSignedIn();
     }
 
-    protected void beginUserInitiatedSignIn() {
+    public void beginUserInitiatedSignIn() {
         mHelper.beginUserInitiatedSignIn();
     }
 

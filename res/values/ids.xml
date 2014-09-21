@@ -11,6 +11,14 @@
     <string name="achievement_1000_games">CgkIlpe_h7EBEAIQCA</string>
     <string name="achievement_2500_games">CgkIlpe_h7EBEAIQCQ</string>
     <string name="achievement_5000_games">CgkIlpe_h7EBEAIQCg</string>
+    <string name="achievement_50_points">CgkIlpe_h7EBEAIQDA</string>
+    <string name="achievement_100_points">CgkIlpe_h7EBEAIQDQ</string>
+    <string name="achievement_150_points">CgkIlpe_h7EBEAIQDg</string>
+    <string name="achievement_200_points">CgkIlpe_h7EBEAIQDw</string>
+    <string name="achievement_300_points">CgkIlpe_h7EBEAIQEA</string>
+    <string name="achievement_400_points">CgkIlpe_h7EBEAIQEQ</string>
+    <string name="achievement_500_points">CgkIlpe_h7EBEAIQEg</string>
     <string name="leaderboard_high_scores">CgkIlpe_h7EBEAIQAg</string>
+    <string name="leaderboard_games_played">CgkIlpe_h7EBEAIQCw</string>
 
 </resources>

@@ -2,5 +2,7 @@
 
     <string name="app_name">fling</string>
     <string name="author">Ivan Grgurevic</string>
-
+    <string name="intent_message">I got %1$d points in fling! https://play.google.com/store/apps/details?id=com.ivangrgurevic.fling</string>
+    <string name="intent_chooser_title">Share</string>
+    
 </resources>

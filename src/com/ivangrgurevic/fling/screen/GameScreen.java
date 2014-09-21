@@ -72,7 +72,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, GameStats.getScore((AndroidGame)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, (AndroidGame) game, GameStats.getScore((AndroidGame)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.update(touchEvents, deltaTime);
@@ -94,7 +94,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, GameStats.getScore((AndroidGame)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, (AndroidGame) game, GameStats.getScore((AndroidGame)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.draw(deltaTime);
@@ -151,7 +151,6 @@ public class GameScreen extends Screen {
 	}
 	
 	public void newGame() {
-		GATracker.sendScreen((AndroidGame)game, "com.ivangrgurevic.fling.screen.layer.GamePlayLayer");
 		game.setScreen(new GameScreen(game, gameAssets));
 	}
 }
