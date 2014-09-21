@@ -10,11 +10,13 @@ import com.ivangrgurevic.fling.framework.Game;
 import com.ivangrgurevic.fling.framework.Graphics;
 import com.ivangrgurevic.fling.framework.Screen;
 import com.ivangrgurevic.fling.framework.Input.TouchEvent;
+import com.ivangrgurevic.fling.framework.implementation.AndroidGame;
 import com.ivangrgurevic.fling.screen.layer.BackgroundLayer;
 import com.ivangrgurevic.fling.screen.layer.GameOverLayer;
 import com.ivangrgurevic.fling.screen.layer.GamePlayLayer;
 import com.ivangrgurevic.fling.screen.layer.PausedLayer;
-import com.ivangrgurevic.fling.util.Score;
+import com.ivangrgurevic.fling.util.GATracker;
+import com.ivangrgurevic.fling.util.GameStats;
 
 public class GameScreen extends Screen {
 	private enum GameState {
@@ -45,8 +47,10 @@ public class GameScreen extends Screen {
 		gamePlayLayer = new GamePlayLayer(this, graphics, gameAssets, game);
 		pausedLayer = new PausedLayer(this, graphics, game);
 		gameOverLayer = null;
+		
+		GATracker.sendScreen((AndroidGame)game, "com.ivangrgurevic.fling.screen.layer.GamePlayLayer");
 	}
-
+	
 	//=============================================================== UPDATE
 	@Override
 	public void update(float deltaTime) {
@@ -57,8 +61,8 @@ public class GameScreen extends Screen {
 			gamePlayLayer.update(touchEvents, deltaTime);
 			
 			if (gamePlayLayer.isGameOver()) {
-				Score.set((Context)game, gamePlayLayer.getPoints());
-				state = GameState.OVER;
+				GameStats.setScore((AndroidGame) game, gamePlayLayer.getPoints());
+				this.gameOver();
 				vibrator.vibrate(50);
 			}
 		}
@@ -68,12 +72,11 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, Score.get((Context)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, GameStats.getScore((AndroidGame)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.update(touchEvents, deltaTime);
 			gameOverLayer.update(touchEvents, deltaTime);
-			//menuBarLayer.update(touchEvents, deltaTime);
 		}
 	}
 	
@@ -91,7 +94,7 @@ public class GameScreen extends Screen {
 		}
 		else if (state == GameState.OVER) {
 			if(gameOverLayer == null) {
-				gameOverLayer = new GameOverLayer(this, graphics, Score.get((Context)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
+				gameOverLayer = new GameOverLayer(this, graphics, GameStats.getScore((AndroidGame)game), gamePlayLayer.getPoints(), gameAssets, gamePlayLayer.getPlayerSprite(), gamePlayLayer.getMinusSprites(), gamePlayLayer.getDispersionEffects());
 			}
 			
 			backgroundLayer.draw(deltaTime);
@@ -115,6 +118,7 @@ public class GameScreen extends Screen {
 	public void pause() {
 		if (state == GameState.PLAYING) {
 			state = GameState.PAUSED;
+			GATracker.sendScreen((AndroidGame)game, "com.ivangrgurevic.fling.screen.layer.PausedLayer");
 		}
 	}
 
@@ -122,9 +126,16 @@ public class GameScreen extends Screen {
 	public void resume() {
 		if (state == GameState.PAUSED) {
 			state = GameState.PLAYING;
+			GATracker.sendScreen((AndroidGame)game, "com.ivangrgurevic.fling.screen.layer.GamePlayLayer");
 		}
 	}
 
+	private void gameOver() {
+		state = GameState.OVER;
+		GameStats.incrementGamesPlayed((AndroidGame)game);
+		GATracker.sendScreen((AndroidGame)game, "com.ivangrgurevic.fling.screen.layer.GameOverLayer");
+	}
+	
 	@Override
 	public void dispose() {
 		nullify();		
@@ -140,6 +151,7 @@ public class GameScreen extends Screen {
 	}
 	
 	public void newGame() {
+		GATracker.sendScreen((AndroidGame)game, "com.ivangrgurevic.fling.screen.layer.GamePlayLayer");
 		game.setScreen(new GameScreen(game, gameAssets));
 	}
 }

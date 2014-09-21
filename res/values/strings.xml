@@ -1,8 +1,6 @@
 <resources>
 
     <string name="app_name">fling</string>
-    <string name="press_back">Press back again to exit</string>
-    <string name="twitter_intent_url">https://twitter.com/intent/tweet?text=I%%20got%%20to%%20level%%20%1$d%%20on%%20Node!</string>
     <string name="author">Ivan Grgurevic</string>
 
 </resources>

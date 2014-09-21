@@ -32,4 +32,16 @@ public class Fling extends AndroidGame {
     public void onPause() {
         super.onPause();
     }
+
+	@Override
+	public void onSignInFailed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSignInSucceeded() {
+		// TODO Auto-generated method stub
+		
+	}
 }

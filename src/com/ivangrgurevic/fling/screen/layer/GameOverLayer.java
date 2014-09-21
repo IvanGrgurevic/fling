@@ -149,5 +149,8 @@ public class GameOverLayer extends Layer {
 				}
 			}
 		}
+		
+		//game.startActivityForResult(Games.Achievements.getAchievementsIntent(game.getApiClient()), 0);
+		//game.startActivityForResult(Games.Leaderboards.getLeaderboardIntent(game.getApiClient(), game.getString(R.string.leaderboard_high_scores)), 0);
 	}
-	}
+}
