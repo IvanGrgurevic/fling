@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_id">47528790934</string>
+    <string name="achievement_1_game">CgkIlpe_h7EBEAIQAQ</string>
+    <string name="achievement_5_games">CgkIlpe_h7EBEAIQAw</string>
+    <string name="achievement_50_games">CgkIlpe_h7EBEAIQBA</string>
+    <string name="achievement_100_games">CgkIlpe_h7EBEAIQBQ</string>
+    <string name="achievement_200_games">CgkIlpe_h7EBEAIQBg</string>
+    <string name="achievement_500_games">CgkIlpe_h7EBEAIQBw</string>
+    <string name="achievement_1000_games">CgkIlpe_h7EBEAIQCA</string>
+    <string name="achievement_2500_games">CgkIlpe_h7EBEAIQCQ</string>
+    <string name="achievement_5000_games">CgkIlpe_h7EBEAIQCg</string>
+    <string name="leaderboard_high_scores">CgkIlpe_h7EBEAIQAg</string>
+
+</resources>

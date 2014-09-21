@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ga_logLevel">verbose</string>
+
+    <integer name="ga_dispatchPeriod">30</integer>
+
+    <bool name="ga_dryRun">false</bool>
+
+    <screenName name="com.ivangrgurevic.fling.screen.layer.GamePlayLayer">Game Play Screen</screenName>
+    <screenName name="com.ivangrgurevic.fling.screen.layer.PausedLayer">Paused Screen</screenName>
+    <screenName name="com.ivangrgurevic.fling.screen.layer.GameOverLayer">Game Over Screen</screenName>
+
+    <string name="ga_trackingId">UA-47897089-2</string>
+
+</resources>
